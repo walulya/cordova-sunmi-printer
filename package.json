@@ -1,0 +1,17 @@
+{
+  "name": "Printer",
+  "version": "1.0.0",
+  "description": "",
+  "cordova": {
+    "id": "pebuu.printer",
+    "platforms": [
+      "android"
+    ]
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-android"
+  ],
+  "author": "",
+  "license": "ISC"
+}
