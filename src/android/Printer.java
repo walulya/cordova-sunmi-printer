@@ -22,11 +22,41 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.rt.printerlibrary.bean.BluetoothEdrConfigBean;
+import com.rt.printerlibrary.bean.UsbConfigBean;
+import com.rt.printerlibrary.bean.WiFiConfigBean;
+import com.rt.printerlibrary.cmd.Cmd;
+import com.rt.printerlibrary.cmd.CpclFactory;
+import com.rt.printerlibrary.cmd.EscCmd;
+import com.rt.printerlibrary.cmd.EscFactory;
+import com.rt.printerlibrary.cmd.PinFactory;
+import com.rt.printerlibrary.cmd.TscFactory;
+import com.rt.printerlibrary.cmd.ZplFactory;
+import com.rt.printerlibrary.connect.PrinterInterface;
+import com.rt.printerlibrary.enumerate.CommonEnum;
+import com.rt.printerlibrary.enumerate.ConnectStateEnum;
+import com.rt.printerlibrary.factory.cmd.CmdFactory;
+import com.rt.printerlibrary.factory.connect.BluetoothFactory;
+import com.rt.printerlibrary.factory.connect.PIFactory;
+import com.rt.printerlibrary.factory.connect.UsbFactory;
+import com.rt.printerlibrary.factory.connect.WiFiFactory;
+import com.rt.printerlibrary.factory.printer.LabelPrinterFactory;
+import com.rt.printerlibrary.factory.printer.PinPrinterFactory;
+import com.rt.printerlibrary.factory.printer.PrinterFactory;
+import com.rt.printerlibrary.factory.printer.ThermalPrinterFactory;
+import com.rt.printerlibrary.factory.printer.UniversalPrinterFactory;
+import com.rt.printerlibrary.observer.PrinterObserver;
+import com.rt.printerlibrary.observer.PrinterObserverManager;
+import com.rt.printerlibrary.printer.RTPrinter;
+import com.rt.printerlibrary.utils.FuncUtils;
+
 /**
  * This class echoes a string called from JavaScript.
  */
 public class Printer extends CordovaPlugin {
     private static final String LOG_TAG = "RTPrinter";
+    private RTPrinter rtPrinter = null;
+    private PrinterFactory printerFactory;
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
