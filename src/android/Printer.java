@@ -3,6 +3,14 @@ package pebuu.printer;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Hashtable;
+import java.util.Set;
+import java.util.UUID;
+
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -18,6 +26,7 @@ import org.json.JSONObject;
  * This class echoes a string called from JavaScript.
  */
 public class Printer extends CordovaPlugin {
+    private static final String LOG_TAG = "RTPrinter";
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
