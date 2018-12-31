@@ -16,8 +16,8 @@ var RTPrinter = {
     setBTPrinter: function(fnSuccess, fnError, name){
         exec(fnSuccess, fnError, PLUGIN_NAME, "setBTPrinter", [name]);
      },
-    connect: function(fnSuccess, fnError, name){
-        exec(fnSuccess, fnError, PLUGIN_NAME, "connect", [name]);
+    connect: function(fnSuccess, fnError){
+        exec(fnSuccess, fnError, PLUGIN_NAME, "connect", []);
      },
     init: function(fnSuccess, fnError){
         exec(fnSuccess, fnError, PLUGIN_NAME, "init", []);
