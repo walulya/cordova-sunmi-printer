@@ -3,13 +3,6 @@ package pebuu.printer;
 import org.apache.cordova.CordovaPlugin;
 import org.apache.cordova.CallbackContext;
 
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Hashtable;
-import java.util.Set;
-import java.util.UUID;
 
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -50,13 +43,33 @@ import com.rt.printerlibrary.observer.PrinterObserverManager;
 import com.rt.printerlibrary.printer.RTPrinter;
 import com.rt.printerlibrary.utils.FuncUtils;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Hashtable;
+import java.util.Set;
+import java.util.UUID;
+
 /**
  * This class echoes a string called from JavaScript.
  */
 public class Printer extends CordovaPlugin {
     private static final String LOG_TAG = "RTPrinter";
+
+    @BaseEnum.ConnectType
+    private int checkedConType = BaseEnum.CON_BLUETOOTH;
+    BluetoothDevice currentBTDevice;
     private RTPrinter rtPrinter = null;
     private PrinterFactory printerFactory;
+    private ArrayList<PrinterInterface> printerInterfaceArrayList = new ArrayList<>();
+    private PrinterInterface curPrinterInterface = null;
+    private Object configObj;
+
 
     @Override
     public boolean execute(String action, JSONArray args, CallbackContext callbackContext) throws JSONException {
@@ -82,7 +95,8 @@ public class Printer extends CordovaPlugin {
         return false;
     }
 
-    private void coolMethod(String message, CallbackContext callbackContext) {
+
+    private void coolMethod(int message, CallbackContext callbackContext) {
         if (message != null && message.length() > 0) {
             callbackContext.success(message);
         } else {
@@ -90,7 +104,76 @@ public class Printer extends CordovaPlugin {
         }
     }
 
-//This will return the array list of paired bluetooth printers
+    private void setPrinterType(int type, CallbackContext callbackContext) {
+        String errMsg = null;
+        switch(type){
+            case BaseEnum.CMD_PIN:
+                printerFactory = new PinPrinterFactory();
+
+                rtPrinter = printerFactory.create();
+                rtPrinter.setPrinterInterface(curPrinterInterface);
+            break;
+            case BaseEnum.CMD_ESC:
+                printerFactory = new ThermalPrinterFactory();
+                rtPrinter = printerFactory.create();
+                rtPrinter.setPrinterInterface(curPrinterInterface);             
+            break;
+            case BaseEnum.CMD_TSC:
+                printerFactory = new LabelPrinterFactory();
+                rtPrinter = printerFactory.create();
+                rtPrinter.setPrinterInterface(curPrinterInterface);
+            break;
+            case BaseEnum.CMD_CPCL:
+                printerFactory = new LabelPrinterFactory();
+                rtPrinter = printerFactory.create();
+                rtPrinter.setPrinterInterface(curPrinterInterface);
+            break;
+            case BaseEnum.CMD_ZPL:
+                printerFactory = new LabelPrinterFactory();
+                rtPrinter = printerFactory.create();
+                rtPrinter.setPrinterInterface(curPrinterInterface);
+            break;
+            default:
+                errMsg = "Unknown printer type selected";
+				callbackContext.error(errMsg);
+                return;
+            break;
+        }
+        callbackContext.success("Printer type set successfully");
+    }
+
+    private int getPrinterType( CallbackContext callbackContext) {
+        callbackContext.success(checkedConType);
+    }
+    
+
+    private void setConnectionType(int type, CallbackContext callbackContext) {
+        switch(type){
+            case BaseEnum.CON_WIFI:
+                checkedConType = BaseEnum.CON_WIFI;
+            break;
+            case BaseEnum.CON_BLUETOOTH:
+                checkedConType = BaseEnum.CON_BLUETOOTH;
+            break;
+            case BaseEnum.CON_USB:
+                checkedConType = BaseEnum.CON_USB;
+            break;
+            case BaseEnum.CON_COM:
+                checkedConType = BaseEnum.CON_COM;
+            break;
+            default:
+                errMsg = "Unknown connection type";
+				callbackContext.error(errMsg);
+                return;
+            break;
+        } 
+         callbackContext.success("Connection type set successfully");
+    }
+    private int getConnectionType( CallbackContext callbackContext) {
+        callbackContext.success(checkedConType);
+    }
+
+    //This will return the array list of paired bluetooth printers
 	void listBT(CallbackContext callbackContext) {
 		BluetoothAdapter mBluetoothAdapter = null;
 		String errMsg = null;
@@ -132,4 +215,77 @@ public class Printer extends CordovaPlugin {
 		}
 	}
 
+    boolean setBlueToothPrinter(CallbackContext callbackContext, String name) {
+		try {
+			mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+			if (mBluetoothAdapter == null) {
+				Log.e(LOG_TAG, "No bluetooth adapter available");
+			}
+			if (!mBluetoothAdapter.isEnabled()) {
+				Intent enableBluetooth = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+				this.cordova.getActivity().startActivityForResult(enableBluetooth, 0);
+			}
+			Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
+			if (pairedDevices.size() > 0) {
+				for (BluetoothDevice device : pairedDevices) {
+					if (device.getName().equalsIgnoreCase(name)) {
+						currentBTDevice = device;
+                        configObj = new BluetoothEdrConfigBean(currentBTDevice);
+						return true;
+					}
+				}
+			}
+			Log.d(LOG_TAG, "Bluetooth Device Found: " + mmDevice.getName());
+		} catch (Exception e) {
+			String errMsg = e.getMessage();
+			Log.e(LOG_TAG, errMsg);
+			e.printStackTrace();
+			callbackContext.error(errMsg);
+		}
+		return false;
+	}
+
+    private void doConnect(String tag, CallbackContext callbackContext) {
+        String errMsg = null;
+
+        switch (checkedConType) {
+            case BaseEnum.CON_WIFI:
+                //WiFiConfigBean wiFiConfigBean = (WiFiConfigBean) configObj;
+                //connectWifi(wiFiConfigBean);
+                break;
+            case BaseEnum.CON_BLUETOOTH:
+                //TimeRecordUtils.record("RT连接start：", System.currentTimeMillis());
+                BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
+                connectBluetooth(bluetoothEdrConfigBean);
+                break;
+            case BaseEnum.CON_USB:
+                //UsbConfigBean usbConfigBean = (UsbConfigBean) configObj;
+                //connectUSB(usbConfigBean);
+                break;
+            default:
+                errMsg = "No printer type selected";
+				callbackContext.error(errMsg);
+                return;                
+                break;
+        }
+
+    }
+
+    private void connectBluetooth(BluetoothEdrConfigBean bluetoothEdrConfigBean) {
+        PIFactory piFactory = new BluetoothFactory();
+        PrinterInterface printerInterface = piFactory.create();
+        printerInterface.setConfigObject(bluetoothEdrConfigBean);
+        rtPrinter.setPrinterInterface(printerInterface);
+        try {
+            rtPrinter.connect(bluetoothEdrConfigBean);
+            callbackContext.success("Printer connected successfully");
+        } catch (Exception e) {
+            String errMsg = e.getMessage();
+			Log.e(LOG_TAG, errMsg);
+			e.printStackTrace();
+			callbackContext.error(errMsg);
+        } finally {
+
+        }
+    }
 }
