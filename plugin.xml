@@ -6,7 +6,7 @@
         <clobbers target="RTPrinter" />
     </js-module>
    <js-module src="www/PrinterConstants.js" name="Camera">
-        <clobbers target="RTContants" />
+        <clobbers target="RTConstants" />
     </js-module>
     <platform name="android">
         <config-file parent="/*" target="res/xml/config.xml">
