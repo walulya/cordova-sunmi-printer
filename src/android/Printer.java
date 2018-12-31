@@ -72,7 +72,7 @@ public class Printer extends CordovaPlugin {
     BluetoothDevice currentBTDevice;
     private RTPrinter rtPrinter = null;
     private PrinterFactory printerFactory;
-    //private ArrayList<PrinterInterface> printerInterfaceArrayList = new ArrayList<>();
+    private ArrayList<PrinterInterface> printerInterfaceArrayList = new ArrayList<PrinterInterface>();
     private PrinterInterface curPrinterInterface = null;
     private Object configObj;
 
@@ -145,6 +145,28 @@ public class Printer extends CordovaPlugin {
 
     public void showToast(String msg){
         Toast.makeText(cordova.getActivity().getWindow().getContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    private boolean isConfigPrintEnable(Object configObj) {
+        if (isInConnectList(configObj)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean isInConnectList(Object configObj) {
+        boolean isInList = false;
+        for (int i = 0; i < printerInterfaceArrayList.size(); i++) {
+            PrinterInterface printerInterface = printerInterfaceArrayList.get(i);
+            if (configObj.toString().equals(printerInterface.getConfigObject().toString())) {
+                if (printerInterface.getConnectState() == ConnectStateEnum.Connected) {
+                    isInList = true;
+                    break;
+                }
+            }
+        }
+        return isInList;
     }
 
     private void setPrinterType(int type, CallbackContext callbackContext) {
