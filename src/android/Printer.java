@@ -27,6 +27,8 @@ import com.rt.printerlibrary.cmd.EscFactory;
 import com.rt.printerlibrary.cmd.PinFactory;
 import com.rt.printerlibrary.cmd.TscFactory;
 import com.rt.printerlibrary.cmd.ZplFactory;
+import com.rt.printerlibrary.bean.LableSizeBean;
+import com.rt.printerlibrary.bean.Position;
 import com.rt.printerlibrary.enumerate.BarcodeStringPosition;
 import com.rt.printerlibrary.enumerate.BarcodeType;
 import com.rt.printerlibrary.enumerate.EscBarcodePrintOritention;
@@ -86,6 +88,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
 
     private BarcodeType barcodeType;
     private String barcodeContent;
+    private PrintRotation printRotation = PrintRotation.Rotate0;
 
 
     @Override
