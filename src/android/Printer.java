@@ -96,7 +96,7 @@ public class Printer extends CordovaPlugin {
     }
 
 
-    private void coolMethod(int message, CallbackContext callbackContext) {
+    private void coolMethod(String message, CallbackContext callbackContext) {
         if (message != null && message.length() > 0) {
             callbackContext.success(message);
         } else {
@@ -148,6 +148,7 @@ public class Printer extends CordovaPlugin {
     
 
     private void setConnectionType(int type, CallbackContext callbackContext) {
+        String errMsg = null;
         switch(type){
             case BaseEnum.CON_WIFI:
                 checkedConType = BaseEnum.CON_WIFI;
@@ -215,7 +216,9 @@ public class Printer extends CordovaPlugin {
 		}
 	}
 
-    boolean setBlueToothPrinter(CallbackContext callbackContext, String name) {
+    boolean setBlueToothPrinter(String name, CallbackContext callbackContext) {
+        BluetoothAdapter mBluetoothAdapter = null;
+		String errMsg = null;
 		try {
 			mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
 			if (mBluetoothAdapter == null) {
@@ -256,7 +259,7 @@ public class Printer extends CordovaPlugin {
             case BaseEnum.CON_BLUETOOTH:
                 //TimeRecordUtils.record("RT连接start：", System.currentTimeMillis());
                 BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
-                connectBluetooth(bluetoothEdrConfigBean);
+                connectBluetooth(bluetoothEdrConfigBean, callbackContext);
                 break;
             case BaseEnum.CON_USB:
                 //UsbConfigBean usbConfigBean = (UsbConfigBean) configObj;
@@ -271,7 +274,7 @@ public class Printer extends CordovaPlugin {
 
     }
 
-    private void connectBluetooth(BluetoothEdrConfigBean bluetoothEdrConfigBean) {
+    private void connectBluetooth(BluetoothEdrConfigBean bluetoothEdrConfigBean, CallbackContext callbackContext) {
         PIFactory piFactory = new BluetoothFactory();
         PrinterInterface printerInterface = piFactory.create();
         printerInterface.setConfigObject(bluetoothEdrConfigBean);
