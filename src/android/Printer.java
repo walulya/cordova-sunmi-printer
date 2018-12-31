@@ -27,6 +27,12 @@ import com.rt.printerlibrary.cmd.EscFactory;
 import com.rt.printerlibrary.cmd.PinFactory;
 import com.rt.printerlibrary.cmd.TscFactory;
 import com.rt.printerlibrary.cmd.ZplFactory;
+import com.rt.printerlibrary.enumerate.BarcodeStringPosition;
+import com.rt.printerlibrary.enumerate.BarcodeType;
+import com.rt.printerlibrary.enumerate.EscBarcodePrintOritention;
+import com.rt.printerlibrary.enumerate.PrintDirection;
+import com.rt.printerlibrary.exception.SdkException;
+import com.rt.printerlibrary.enumerate.PrintRotation;
 import com.rt.printerlibrary.connect.PrinterInterface;
 import com.rt.printerlibrary.enumerate.CommonEnum;
 import com.rt.printerlibrary.enumerate.ConnectStateEnum;
@@ -44,6 +50,8 @@ import com.rt.printerlibrary.observer.PrinterObserver;
 import com.rt.printerlibrary.observer.PrinterObserverManager;
 import com.rt.printerlibrary.printer.RTPrinter;
 import com.rt.printerlibrary.utils.FuncUtils;
+import com.rt.printerlibrary.setting.BarcodeSetting;
+import com.rt.printerlibrary.setting.CommonSetting;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -75,6 +83,9 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
     private ArrayList<PrinterInterface> printerInterfaceArrayList = new ArrayList<PrinterInterface>();
     private PrinterInterface curPrinterInterface = null;
     private Object configObj;
+
+    private BarcodeType barcodeType;
+    private String barcodeContent;
 
 
     @Override
@@ -143,6 +154,8 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         //BaseApplication.instance.setCurrentCmdType(BaseEnum.CMD_ESC);
         printerFactory = new UniversalPrinterFactory();
         rtPrinter = printerFactory.create();
+
+        barcodeType = Enum.valueOf(BarcodeType.class, "UPC_A");
 
         PrinterObserverManager.getInstance().add(this);//Add connection status listener
         callbackContext.success("Print Module Initialized");
@@ -531,5 +544,52 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         }
         rtPrinter.writeMsg(strPrint.getBytes());
         callbackContext.success("Printer test completed ");
+    }
+
+     private void tscPrintBarcode(String barcodeContent) throws SdkException {
+        int labelWidth = 80;
+        int labelHeight = 40;
+
+        CmdFactory tscFac = new TscFactory();
+        Cmd tscCmd = tscFac.create();
+
+        tscCmd.append(tscCmd.getHeaderCmd());
+        CommonSetting commonSetting = new CommonSetting();
+        commonSetting.setLableSizeBean(new LableSizeBean(labelWidth, labelHeight));
+        commonSetting.setLabelGap(3);
+        commonSetting.setPrintDirection(PrintDirection.NORMAL);
+        tscCmd.append(tscCmd.getCommonSettingCmd(commonSetting));
+        BarcodeSetting barcodeSetting = new BarcodeSetting();
+        barcodeSetting.setNarrowInDot(2);//narrow bar setting, bar width
+        barcodeSetting.setWideInDot(4);
+        barcodeSetting.setHeightInDot(48);//bar height setting
+        barcodeSetting.setBarcodeStringPosition(BarcodeStringPosition.BELOW_BARCODE);
+        barcodeSetting.setPrintRotation(printRotation);
+        int x = 30, y = 80;
+        switch (printRotation) {
+            case Rotate0:
+                x = 30;
+                y = 80;
+                break;
+            case Rotate90:
+                x = (labelWidth * 8) / 2;
+                y = 20;
+                break;
+            case Rotate270:
+                x = (labelWidth * 8) / 2;
+                y = (labelHeight * 8) - 20;
+                break;
+            default:
+                break;
+        }
+        barcodeSetting.setPosition(new Position(x, y));
+        byte[] barcodeCmd = tscCmd.getBarcodeCmd(barcodeType, barcodeSetting, barcodeContent);
+        tscCmd.append(barcodeCmd);
+
+        tscCmd.append(tscCmd.getPrintCopies(1));
+        tscCmd.append(tscCmd.getEndCmd());
+        if (rtPrinter != null) {
+            rtPrinter.writeMsgAsync(tscCmd.getAppendCmds());
+        }
     }
 }
