@@ -234,13 +234,14 @@ public class Printer extends CordovaPlugin {
 					if (device.getName().equalsIgnoreCase(name)) {
 						currentBTDevice = device;
                         configObj = new BluetoothEdrConfigBean(currentBTDevice);
+                        callbackContext.success("Bluetooth Device Connected: " + currentBTDevice.getName());
 						return true;
 					}
 				}
 			}
-			Log.d(LOG_TAG, "Bluetooth Device Found: " + mmDevice.getName());
+			Log.d(LOG_TAG, "Bluetooth Device Found: " + currentBTDevice.getName());
 		} catch (Exception e) {
-			String errMsg = e.getMessage();
+			errMsg = e.getMessage();
 			Log.e(LOG_TAG, errMsg);
 			e.printStackTrace();
 			callbackContext.error(errMsg);
