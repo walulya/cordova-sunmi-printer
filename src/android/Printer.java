@@ -66,7 +66,7 @@ public class Printer extends CordovaPlugin {
     BluetoothDevice currentBTDevice;
     private RTPrinter rtPrinter = null;
     private PrinterFactory printerFactory;
-    private ArrayList<PrinterInterface> printerInterfaceArrayList = new ArrayList<>();
+    //private ArrayList<PrinterInterface> printerInterfaceArrayList = new ArrayList<>();
     private PrinterInterface curPrinterInterface = null;
     private Object configObj;
 
