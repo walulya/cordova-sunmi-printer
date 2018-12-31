@@ -144,7 +144,7 @@ public class Printer extends CordovaPlugin {
     }
 
     public void showToast(String msg){
-        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
+        Toast.makeText(cordova.getActivity().getWindow().getContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
     private void setPrinterType(int type, CallbackContext callbackContext) {
