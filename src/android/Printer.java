@@ -10,6 +10,8 @@ import android.bluetooth.BluetoothSocket;
 import android.content.Intent;
 import android.os.Handler;
 import android.util.Log;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -139,6 +141,10 @@ public class Printer extends CordovaPlugin {
         } else {
             callbackContext.error("Expected one non-empty string argument.");
         }
+    }
+
+    public void showToast(String msg){
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 
     private void setPrinterType(int type, CallbackContext callbackContext) {
@@ -279,6 +285,8 @@ public class Printer extends CordovaPlugin {
 						currentBTDevice = device;
                         configObj = new BluetoothEdrConfigBean(currentBTDevice);
                         callbackContext.success("Bluetooth Device Connected: " + currentBTDevice.getName());
+
+                        
 						return true;
 					}
 				}
@@ -338,6 +346,7 @@ public class Printer extends CordovaPlugin {
         try {
             rtPrinter.connect(bluetoothEdrConfigBean);
             callbackContext.success("Printer connected successfully" + rtPrinter.getConnectState());
+            showToast(printerInterface.getConfigObject().toString() +" "+ rtPrinter.getConnectState());
         } catch (Exception e) {
             String errMsg = e.getMessage();
 			Log.e(LOG_TAG, errMsg);
