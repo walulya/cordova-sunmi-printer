@@ -83,6 +83,12 @@ public class Printer extends CordovaPlugin {
             //listBT(callbackContext);
             return true;
         }
+        if (action.equals("setBTPrinter")) {
+            String name = args.getString(0);
+            this.setBlueToothPrinter(name, callbackContext);
+            //listBT(callbackContext);
+            return true;
+        }
         if (action.equals("init")) {
             initRT(callbackContext);
             return true;
@@ -297,8 +303,13 @@ public class Printer extends CordovaPlugin {
                 break;
             case BaseEnum.CON_BLUETOOTH:
                 //TimeRecordUtils.record("RT连接start：", System.currentTimeMillis());
-                BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
-                connectBluetooth(bluetoothEdrConfigBean, callbackContext);
+                if (configObj == null){
+                    errMsg = "No printer selected. call 'setBTPrinter' first";
+				    callbackContext.error(errMsg);
+                } else {
+                    BluetoothEdrConfigBean bluetoothEdrConfigBean = (BluetoothEdrConfigBean) configObj;
+                    connectBluetooth(bluetoothEdrConfigBean, callbackContext);
+                }
                 break;
             case BaseEnum.CON_USB:
                 //UsbConfigBean usbConfigBean = (UsbConfigBean) configObj;

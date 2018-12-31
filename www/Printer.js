@@ -7,11 +7,14 @@ var RTPrinter = {
         //exec(cb, null, PLUGIN_NAME, 'echo', [phrase]);
         exec(cb, null, PLUGIN_NAME, "performAdd", args);
     },
-    setprinter: function(fnSuccess, fnError, type){
+    setprintertype: function(fnSuccess, fnError, type){
         exec(fnSuccess, fnError, PLUGIN_NAME, "printtype", [type]);
      },
     setconntype: function(fnSuccess, fnError, type){
         exec(fnSuccess, fnError, PLUGIN_NAME, "conntype", [type]);
+     },
+    setBTPrinter: function(fnSuccess, fnError, name){
+        exec(fnSuccess, fnError, PLUGIN_NAME, "setBTPrinter", [name]);
      },
     connect: function(fnSuccess, fnError, name){
         exec(fnSuccess, fnError, PLUGIN_NAME, "connect", [name]);
