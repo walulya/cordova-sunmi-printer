@@ -61,6 +61,10 @@ import java.util.UUID;
 public class Printer extends CordovaPlugin {
     private static final String LOG_TAG = "RTPrinter";
 
+
+    @BaseEnum.CmdType
+    private int currentCmdType = BaseEnum.CMD_ESC;//默认为针打
+
     @BaseEnum.ConnectType
     private int checkedConType = BaseEnum.CON_BLUETOOTH;
     BluetoothDevice currentBTDevice;
@@ -76,13 +80,32 @@ public class Printer extends CordovaPlugin {
         if (action.equals("coolMethod")) {
             String message = args.getString(0);
             this.coolMethod(message, callbackContext);
-            listBT(callbackContext);
+            //listBT(callbackContext);
+            return true;
+        }
+        if (action.equals("init")) {
+            initRT(callbackContext);
             return true;
         }
         if (action.equals("list")) {
             listBT(callbackContext);
             return true;
         }
+        else if (action.equals("connect")) {
+            doConnect(callbackContext);
+            return true;
+        }
+        else if (action.equals("printtype")) {
+            int type = args.getInt(0);
+            this.setPrinterType(type, callbackContext);
+            return true;
+        }
+        else if (action.equals("conntype")) {
+            int type = args.getInt(0);
+            this.setConnectionType(type, callbackContext);
+            return true;
+        }
+
         if (action.equals("performAdd")) {
             int arg1 = args.getInt(0);
             int arg2 = args.getInt(1);
@@ -93,6 +116,14 @@ public class Printer extends CordovaPlugin {
             return true;
         }
         return false;
+    }
+
+    public void initRT(CallbackContext callbackContext) {
+        //初始化为针打printer
+        //BaseApplication.instance.setCurrentCmdType(BaseEnum.CMD_ESC);
+        printerFactory = new UniversalPrinterFactory();
+        rtPrinter = printerFactory.create();
+        callbackContext.success("Print Module Initialized");
     }
 
 
@@ -107,10 +138,10 @@ public class Printer extends CordovaPlugin {
     private void setPrinterType(int type, CallbackContext callbackContext) {
         String errMsg = null;
         boolean set = true;
+        this.currentCmdType = type;
         switch(type){
             case BaseEnum.CMD_PIN:
                 printerFactory = new PinPrinterFactory();
-
                 rtPrinter = printerFactory.create();
                 rtPrinter.setPrinterInterface(curPrinterInterface);
             break;
@@ -135,6 +166,7 @@ public class Printer extends CordovaPlugin {
                 rtPrinter.setPrinterInterface(curPrinterInterface);
             break;
             default:
+                this.currentCmdType = BaseEnum.CMD_PIN;//默认为针打
                 errMsg = "Unknown printer type selected";
 				callbackContext.error(errMsg);
                 set = false;
@@ -146,7 +178,7 @@ public class Printer extends CordovaPlugin {
     }
 
     private void getPrinterType( CallbackContext callbackContext) {
-        callbackContext.success(checkedConType);
+        callbackContext.success(this.currentCmdType);
     }
     
 
@@ -255,7 +287,7 @@ public class Printer extends CordovaPlugin {
 		return false;
 	}
 
-    private void doConnect(String tag, CallbackContext callbackContext) {
+    private void doConnect(CallbackContext callbackContext) {
         String errMsg = null;
 
         switch (checkedConType) {
