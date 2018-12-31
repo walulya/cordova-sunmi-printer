@@ -131,6 +131,8 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         //BaseApplication.instance.setCurrentCmdType(BaseEnum.CMD_ESC);
         printerFactory = new UniversalPrinterFactory();
         rtPrinter = printerFactory.create();
+
+        PrinterObserverManager.getInstance().add(this);//Add connection status listener
         callbackContext.success("Print Module Initialized");
     }
 
