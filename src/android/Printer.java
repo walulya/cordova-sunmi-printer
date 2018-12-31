@@ -107,6 +107,10 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
             doConnect(callbackContext);
             return true;
         }
+        else if (action.equals("printtest")) {
+            selfTestPrint(callbackContext);
+            return true;
+        }
         else if (action.equals("printtype")) {
             int type = args.getInt(0);
             this.setPrinterType(type, callbackContext);
@@ -433,5 +437,79 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
     @Override
     public void printerReadMsgCallback(PrinterInterface printerInterface, byte[] bytes) {
 
+    }
+
+    private void selfTestPrint(CallbackContext callbackContext) {
+        if ( rtPrinter.getConnectState() != ConnectStateEnum.Connected){
+            callbackContext.error("Printer not initialized" ); 
+        }
+        switch (this.currentCmdType) {
+            case BaseEnum.CMD_PIN:
+                pinSelftestPrint();
+                break;
+            case BaseEnum.CMD_ESC:
+                escSelftestPrint();
+                break;
+            case BaseEnum.CMD_TSC:
+                tscSelftestPrint();
+                break;
+            case BaseEnum.CMD_CPCL:
+                cpclSelftestPrint();
+                break;
+            case BaseEnum.CMD_ZPL:
+                zplSelftestPrint();
+                break;
+            default:
+                break;
+        }
+        callbackContext.success("Printer started: " + rtPrinter.getConnectState()); 
+
+    }
+
+    private void cpclSelftestPrint() {
+        CmdFactory cmdFactory = new CpclFactory();
+        Cmd cmd = cmdFactory.create();
+//        cmd.append(cmd.getCpclHeaderCmd(80,60,1));
+        cmd.append(cmd.getSelfTestCmd());
+        rtPrinter.writeMsgAsync(cmd.getAppendCmds());
+    }
+
+    private void zplSelftestPrint() {
+        CmdFactory cmdFactory = new ZplFactory();
+        Cmd cmd = cmdFactory.create();
+        cmd.append(cmd.getHeaderCmd());
+        cmd.append(cmd.getSelfTestCmd());
+        cmd.append(cmd.getEndCmd());
+        rtPrinter.writeMsgAsync(cmd.getAppendCmds());
+    }
+
+    private void tscSelftestPrint() {
+        CmdFactory cmdFactory = new TscFactory();
+        Cmd cmd = cmdFactory.create();
+        cmd.append(cmd.getHeaderCmd());
+        cmd.append(cmd.getLFCRCmd());
+        cmd.append(cmd.getLFCRCmd());
+        cmd.append(cmd.getSelfTestCmd());
+        rtPrinter.writeMsgAsync(cmd.getAppendCmds());
+    }
+
+    private void escSelftestPrint() {
+        CmdFactory cmdFactory = new EscFactory();
+        Cmd cmd = cmdFactory.create();
+        cmd.append(cmd.getHeaderCmd());
+        cmd.append(cmd.getLFCRCmd());
+        cmd.append(cmd.getSelfTestCmd());
+        cmd.append(cmd.getLFCRCmd());
+        rtPrinter.writeMsgAsync(cmd.getAppendCmds());
+    }
+
+    private void pinSelftestPrint() {
+        CmdFactory cmdFactory = new PinFactory();
+        Cmd cmd = cmdFactory.create();
+        cmd.append(cmd.getHeaderCmd());
+        cmd.append(cmd.getLFCRCmd());
+        cmd.append(cmd.getLFCRCmd());
+        cmd.append(cmd.getSelfTestCmd());
+        rtPrinter.writeMsgAsync(cmd.getAppendCmds());
     }
 }
