@@ -17,6 +17,6 @@
         <source-file src="src/android/Printer.java" target-dir="src/pebuu/printer/Printer" />
         <source-file src="src/android/BaseEnum.java" target-dir="src/pebuu/printer/BaseEnum" />
         <source-file src="src/android/libs/printer_library.jar" target-dir="libs" />
-        <source-file src="src/android/libs/annotations-4.1.1.4.jar" target-dir="libs" />
+        <source-file src="src/android/libs/android-support-annotations.jar" target-dir="libs" />
     </platform>
 </plugin>
