@@ -106,6 +106,7 @@ public class Printer extends CordovaPlugin {
 
     private void setPrinterType(int type, CallbackContext callbackContext) {
         String errMsg = null;
+        boolean set = true;
         switch(type){
             case BaseEnum.CMD_PIN:
                 printerFactory = new PinPrinterFactory();
@@ -136,19 +137,22 @@ public class Printer extends CordovaPlugin {
             default:
                 errMsg = "Unknown printer type selected";
 				callbackContext.error(errMsg);
-                return;
+                set = false;
             break;
         }
-        callbackContext.success("Printer type set successfully");
+        if (set) {
+            callbackContext.success("Printer type set successfully");
+        }
     }
 
-    private int getPrinterType( CallbackContext callbackContext) {
+    private void getPrinterType( CallbackContext callbackContext) {
         callbackContext.success(checkedConType);
     }
     
 
     private void setConnectionType(int type, CallbackContext callbackContext) {
         String errMsg = null;
+        boolean set = true;
         switch(type){
             case BaseEnum.CON_WIFI:
                 checkedConType = BaseEnum.CON_WIFI;
@@ -165,12 +169,14 @@ public class Printer extends CordovaPlugin {
             default:
                 errMsg = "Unknown connection type";
 				callbackContext.error(errMsg);
-                return;
+                set = false;
             break;
         } 
-         callbackContext.success("Connection type set successfully");
+        if (set){
+            callbackContext.success("Connection type set successfully");
+         }
     }
-    private int getConnectionType( CallbackContext callbackContext) {
+    private void getConnectionType( CallbackContext callbackContext) {
         callbackContext.success(checkedConType);
     }
 
