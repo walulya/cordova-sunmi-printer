@@ -5,6 +5,9 @@
         <!--<clobbers target="cordova.plugins.Printer" /> -->
         <clobbers target="RTPrinter" />
     </js-module>
+   <js-module src="www/PrinterConstants.js" name="Camera">
+        <clobbers target="RTContants" />
+    </js-module>
     <platform name="android">
         <config-file parent="/*" target="res/xml/config.xml">
             <feature name="Printer">
