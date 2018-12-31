@@ -387,6 +387,33 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
             @Override
             public void run() {
                 showToast(printerInterface.getConfigObject().toString() + " Hit");
+                 switch (state) {
+                    case CommonEnum.CONNECT_STATE_SUCCESS:
+                        showToast(printerInterface.getConfigObject().toString() + "Connected");
+                        //tv_device_selected.setText(printerInterface.getConfigObject().toString());
+                       // tv_device_selected.setTag(BaseEnum.HAS_DEVICE);
+                        curPrinterInterface = printerInterface;// set current Printer Interface
+                        printerInterfaceArrayList.add(printerInterface);//Multiple connections - added to the connected list
+                        rtPrinter.setPrinterInterface(printerInterface);
+                        //BaseApplication.getInstance().setRtPrinter(rtPrinter);
+                        //setPrintEnable(true);
+                        break;
+                    case CommonEnum.CONNECT_STATE_INTERRUPTED:
+                        if (printerInterface != null && printerInterface.getConfigObject() != null) {
+                            showToast(printerInterface.getConfigObject().toString() + "Disconnected");
+                        } else {
+                            showToast("Disconnected");
+                        }
+                        //tv_device_selected.setText(R.string.please_connect);
+                        //tv_device_selected.setTag(BaseEnum.NO_DEVICE);
+                        curPrinterInterface = null;
+                        printerInterfaceArrayList.remove(printerInterface);//多连接-从已连接列表中移除
+                        //BaseApplication.getInstance().setRtPrinter(null);
+                        //setPrintEnable(false);
+                        break;
+                    default:
+                        break;
+                }               
             }
          });
     
