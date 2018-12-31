@@ -324,6 +324,12 @@ public class Printer extends CordovaPlugin {
 
     }
 
+    private void doDisConnect() {
+        if (rtPrinter != null && rtPrinter.getPrinterInterface() != null) {
+            rtPrinter.disConnect();
+        }
+    }
+
     private void connectBluetooth(BluetoothEdrConfigBean bluetoothEdrConfigBean, CallbackContext callbackContext) {
         PIFactory piFactory = new BluetoothFactory();
         PrinterInterface printerInterface = piFactory.create();
@@ -331,7 +337,7 @@ public class Printer extends CordovaPlugin {
         rtPrinter.setPrinterInterface(printerInterface);
         try {
             rtPrinter.connect(bluetoothEdrConfigBean);
-            callbackContext.success("Printer connected successfully");
+            callbackContext.success("Printer connected successfully" + rtPrinter.getConnectState());
         } catch (Exception e) {
             String errMsg = e.getMessage();
 			Log.e(LOG_TAG, errMsg);
