@@ -16,6 +16,9 @@ var RTPrinter = {
      printtest: function(fnSuccess, fnError){
         exec(fnSuccess, fnError, PLUGIN_NAME, "printtest", []);
      },
+     cuttest: function(fnSuccess, fnError){
+        exec(fnSuccess, fnError, PLUGIN_NAME, "cuttest", []);
+     },
     setconntype: function(fnSuccess, fnError, type){
         exec(fnSuccess, fnError, PLUGIN_NAME, "conntype", [type]);
      },

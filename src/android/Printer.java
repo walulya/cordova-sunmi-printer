@@ -111,6 +111,10 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
             selfTestPrint(callbackContext);
             return true;
         }
+        else if (action.equals("cuttest")) {
+            allCutTest(callbackContext);
+            return true;
+        }
         else if (action.equals("printtype")) {
             int type = args.getInt(0);
             this.setPrinterType(type, callbackContext);
@@ -462,7 +466,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
             default:
                 break;
         }
-        callbackContext.success("Printer started: " + rtPrinter.getConnectState()); 
+        callbackContext.success(this.currentCmdType+" Printer started: " + rtPrinter.getConnectState()); 
 
     }
 
@@ -511,5 +515,29 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         cmd.append(cmd.getLFCRCmd());
         cmd.append(cmd.getSelfTestCmd());
         rtPrinter.writeMsgAsync(cmd.getAppendCmds());
+    }
+    private void allCutTest(CallbackContext callbackContext) {
+        if ( rtPrinter.getConnectState() != ConnectStateEnum.Connected){
+            callbackContext.error("Printer not initialized" ); 
+        }
+        switch (this.currentCmdType) {
+            case BaseEnum.CMD_ESC:
+                if (rtPrinter != null) {
+                    CmdFactory cmdFactory = new EscFactory();
+                    Cmd cmd = cmdFactory.create();
+                    cmd.append(cmd.getAllCutCmd());
+                    rtPrinter.writeMsgAsync(cmd.getAppendCmds());
+                }
+                break;
+            default:
+                if (rtPrinter != null) {
+                    CmdFactory cmdFactory = new EscFactory();
+                    Cmd cmd = cmdFactory.create();
+                    cmd.append(cmd.getAllCutCmd());
+                    rtPrinter.writeMsgAsync(cmd.getAppendCmds());
+                }
+                break;
+        }
+        callbackContext.success("Printer test completed ");
     }
 }
