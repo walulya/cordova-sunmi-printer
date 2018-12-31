@@ -520,24 +520,16 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         if ( rtPrinter.getConnectState() != ConnectStateEnum.Connected){
             callbackContext.error("Printer not initialized" ); 
         }
-        switch (this.currentCmdType) {
-            case BaseEnum.CMD_ESC:
-                if (rtPrinter != null) {
-                    CmdFactory cmdFactory = new EscFactory();
-                    Cmd cmd = cmdFactory.create();
-                    cmd.append(cmd.getAllCutCmd());
-                    rtPrinter.writeMsgAsync(cmd.getAppendCmds());
-                }
-                break;
-            default:
-                if (rtPrinter != null) {
-                    CmdFactory cmdFactory = new EscFactory();
-                    Cmd cmd = cmdFactory.create();
-                    cmd.append(cmd.getAllCutCmd());
-                    rtPrinter.writeMsgAsync(cmd.getAppendCmds());
-                }
-                break;
+        TonyUtils.Tsc_InitLabelPrint(rtPrinter);
+        String strPrintTxt = TonyUtils.printText("80", "80", "TSS24.BF2", "0", "1", "1", "Hello,容大!");
+        String strPrint = TonyUtils.setPRINT("1", "1");
+
+        try {
+            rtPrinter.writeMsg(strPrintTxt.getBytes("GBK"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
         }
+        rtPrinter.writeMsg(strPrint.getBytes());
         callbackContext.success("Printer test completed ");
     }
 }
