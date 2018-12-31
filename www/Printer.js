@@ -10,6 +10,9 @@ var RTPrinter = {
     setprintertype: function(fnSuccess, fnError, type){
         exec(fnSuccess, fnError, PLUGIN_NAME, "printtype", [type]);
      },
+     status: function(fnSuccess, fnError){
+        exec(fnSuccess, fnError, PLUGIN_NAME, "status", []);
+     },
     setconntype: function(fnSuccess, fnError, type){
         exec(fnSuccess, fnError, PLUGIN_NAME, "conntype", [type]);
      },

@@ -95,6 +95,10 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
             initRT(callbackContext);
             return true;
         }
+        if (action.equals("status")) {
+            getPrinterStatus(callbackContext);
+            return true;
+        }
         if (action.equals("list")) {
             listBT(callbackContext);
             return true;
@@ -215,6 +219,14 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
 
     private void getPrinterType( CallbackContext callbackContext) {
         callbackContext.success(this.currentCmdType);
+    }
+
+    private void getPrinterStatus( CallbackContext callbackContext) {
+        if (curPrinterInterface != null && curPrinterInterface.getConfigObject() != null){
+           callbackContext.success("Printer status: " + rtPrinter.getConnectState()); 
+        }
+
+        callbackContext.error("Printer not initialized" );
     }
     
 
@@ -386,7 +398,6 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
          cordova.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                showToast(printerInterface.getConfigObject().toString() + " Hit");
                  switch (state) {
                     case CommonEnum.CONNECT_STATE_SUCCESS:
                         showToast(printerInterface.getConfigObject().toString() + "Connected");
