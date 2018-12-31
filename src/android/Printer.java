@@ -277,7 +277,7 @@ public class Printer extends CordovaPlugin {
 				for (BluetoothDevice device : pairedDevices) {
 					if (device.getName().equalsIgnoreCase(name)) {
 						currentBTDevice = device;
-                        //configObj = new BluetoothEdrConfigBean(currentBTDevice);
+                        configObj = new BluetoothEdrConfigBean(currentBTDevice);
                         callbackContext.success("Bluetooth Device Connected: " + currentBTDevice.getName());
 						return true;
 					}
@@ -295,9 +295,7 @@ public class Printer extends CordovaPlugin {
 
     private void doConnect(CallbackContext callbackContext) {
         String errMsg = null;
-                    errMsg = "No printer type selected";
-				callbackContext.error(errMsg);
-                return;
+                   
         switch (checkedConType) {
             case BaseEnum.CON_WIFI:
                 //WiFiConfigBean wiFiConfigBean = (WiFiConfigBean) configObj;
