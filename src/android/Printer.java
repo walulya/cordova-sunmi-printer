@@ -275,7 +275,7 @@ public class Printer extends CordovaPlugin {
             default:
                 errMsg = "No printer type selected";
 				callbackContext.error(errMsg);
-                return;                
+                            
                 break;
         }
 
