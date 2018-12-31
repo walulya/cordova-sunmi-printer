@@ -60,7 +60,7 @@ import java.util.UUID;
 /**
  * This class echoes a string called from JavaScript.
  */
-public class Printer extends CordovaPlugin {
+public class Printer extends CordovaPlugin implements PrinterObserver{
     private static final String LOG_TAG = "RTPrinter";
 
 
@@ -377,5 +377,15 @@ public class Printer extends CordovaPlugin {
         } finally {
 
         }
+    }
+
+    @Override
+    public void printerObserverCallback(final PrinterInterface printerInterface, final int state) {
+    
+    }
+
+    @Override
+    public void printerReadMsgCallback(PrinterInterface printerInterface, byte[] bytes) {
+
     }
 }
