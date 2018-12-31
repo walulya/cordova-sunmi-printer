@@ -382,7 +382,10 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
     @Override
     public void printerObserverCallback(final PrinterInterface printerInterface, final int state) {
          cordova.getActivity().runOnUiThread(new Runnable() {
-             showToast(printerInterface.getConfigObject().toString() + " Hit");
+            @Override
+            public void run() {
+                showToast(printerInterface.getConfigObject().toString() + " Hit");
+            }
          });
     
     }
