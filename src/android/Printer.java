@@ -547,7 +547,15 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         }
         rtPrinter.writeMsg(strPrint.getBytes());
         String code = "12345678901";
-        tscPrintBarcode(code);
+        try{
+            tscPrintBarcode(code);
+        } catch (SdkException e) {
+            String errMsg = e.getMessage();
+			Log.e(LOG_TAG, errMsg);
+			e.printStackTrace();
+			callbackContext.error(errMsg);
+            return;
+        }        
         callbackContext.success("Printer test completed ");
     }
 
