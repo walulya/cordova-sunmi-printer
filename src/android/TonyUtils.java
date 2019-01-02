@@ -181,6 +181,21 @@ public class TonyUtils {
 
     }
 
+     public static void Ivan_InitLabelPrint(RTPrinter rtPrinter) {
+//        labelPrint.SetSize(RTApplication.labelWidth, RTApplication.labelHeight);
+        byte[] btSize = SetSize("80", "40").getBytes();
+        byte[] btGap = SetGAP("3", "0").getBytes();
+        byte[] btDir = SetDIRECTION("0").getBytes();
+        String str = "CLS\r\n";
+        byte[] btCLS = str.getBytes();
+
+        rtPrinter.writeMsg(btSize);
+        rtPrinter.writeMsg(btGap);
+        rtPrinter.writeMsg(btDir);
+        rtPrinter.writeMsg(btCLS);
+
+    }
+
 
     private static String SetSize(String width, String length) {
         int mIndex = 0;
