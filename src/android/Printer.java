@@ -189,7 +189,8 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         printerFactory = new UniversalPrinterFactory();
         rtPrinter = printerFactory.create();
 
-        barcodeType = Enum.valueOf(BarcodeType.class, "UPC_A");
+        //barcodeType = Enum.valueOf(BarcodeType.class, "UPC_A");
+        barcodeType = Enum.valueOf(BarcodeType.class, "CODE39");
 
         textSetting = new TextSetting();
 
