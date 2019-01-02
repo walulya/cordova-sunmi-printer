@@ -868,7 +868,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
                 Cmd cmd = cmdFactory.create();
                 // cmd.append(cmd.getHeaderCmd());
 
-                int limitDots = Integer.parseInt(et_pic_width.getText().toString())*8;
+                int limitDots = 2*8;
                 BitmapSetting bitmapSetting = new BitmapSetting();
                 CommonSetting commonSetting = new CommonSetting();
 
@@ -1009,10 +1009,6 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
     }
 
     private void escPrintText() throws UnsupportedEncodingException {
-        if (rtPrinter == null || rtPrinter.getConnectState() != ConnectStateEnum.Connected){
-            callbackContext.error("Printer not initialized" ); 
-        }
-        
         
             CmdFactory escFac = new EscFactory();
             Cmd escCmd = escFac.create();
