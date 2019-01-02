@@ -536,7 +536,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         if ( rtPrinter.getConnectState() != ConnectStateEnum.Connected){
             callbackContext.error("Printer not initialized" ); 
         }
-        TonyUtils.Tsc_InitLabelPrint(rtPrinter);
+        //TonyUtils.Tsc_InitLabelPrint(rtPrinter);
         /*String strPrintTxt = TonyUtils.printText("80", "80", "TSS24.BF2", "0", "1", "1", "Hello,容大!");
         String strPrint = TonyUtils.setPRINT("1", "1");
 
