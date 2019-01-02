@@ -14,6 +14,7 @@ import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.content.res.Resources;
 
 import org.json.JSONArray;
 import org.json.JSONException;
