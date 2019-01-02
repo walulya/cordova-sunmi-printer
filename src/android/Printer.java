@@ -790,7 +790,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
                  * MODE_MULTI_COLOR - 适合多阶灰度打印<br/> Suitable for multi-level grayscale printing<br/>
                  * MODE_SINGLE_COLOR-适合白纸黑字打印<br/>Suitable for printing black and white paper
                  */
-                bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_SINGLE_COLOR);
+                bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_MULTI_COLOR);
 //                bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_MULTI_COLOR);
 
                if (bmpPrintWidth > 72) {
