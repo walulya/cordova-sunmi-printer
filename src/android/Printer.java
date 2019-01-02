@@ -548,10 +548,27 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         rtPrinter.writeMsg(strPrint.getBytes());*/
         String code = "12345678901";
         try{
-            tscPrintBarcode(code);
-            zplPrint(code);
-            cpclPrint(code);
-            escPrint(code);
+           switch ( this.currentCmdType ) {
+            case BaseEnum.CMD_ESC:
+            case BaseEnum.CMD_PIN:
+                escPrint(code);
+                break;
+            case BaseEnum.CMD_TSC:
+                tscPrintBarcode(code);
+                break;
+            case BaseEnum.CMD_CPCL:
+                cpclPrint(code);
+                break;
+            case BaseEnum.CMD_ZPL:
+                zplPrint(code);
+                break;
+            default:
+                break;
+            }   
+            
+            
+            
+            
         } catch (SdkException e) {
             String errMsg = e.getMessage();
 			Log.e(LOG_TAG, errMsg);
