@@ -24,10 +24,10 @@
         <source-file src="src/android/libs/android-support-annotations.jar" target-dir="libs" />
 
          <!--  drawable src/android/resources -->
-        <resource-file src="src/android/res/drawable-hdpi/Pebuu_Africa_Logo.png" target="res/drawable-hdpi/Pebuu_Africa_Logo.png" />
-        <resource-file src="src/android/res/drawable-mdpi/Pebuu_Africa_Logo.png" target="res/drawable-mdpi/Pebuu_Africa_Logo.png" />
-        <resource-file src="src/android/res/drawable-xhdpi/Pebuu_Africa_Logo.png" target="res/drawable-xhdpi/Pebuu_Africa_Logo.png" />
-        <resource-file src="src/android/res/drawable-xxhdpi/Pebuu_Africa_Logo.png" target="res/drawable-xxhdpi/Pebuu_Africa_Logo.png" />
+        <resource-file src="src/android/res/drawable-hdpi/pebuu_africa_logo.png" target="res/drawable-hdpi/pebuu_africa_logo.png" />
+        <resource-file src="src/android/res/drawable-mdpi/pebuu_africa_logo.png" target="res/drawable-mdpi/pebuu_africa_logo.png" />
+        <resource-file src="src/android/res/drawable-xhdpi/pebuu_africa_logo.png" target="res/drawable-xhdpi/pebuu_africa_logo.png" />
+        <resource-file src="src/android/res/drawable-xxhdpi/pebuu_africa_logo.png" target="res/drawable-xxhdpi/pebuu_africa_logo.png" />
 
     </platform>
 </plugin>
