@@ -1043,7 +1043,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         lineSpacing =  n;
     }
 
-   private int setTextAlign(int i) {
+   private void setTextAlign(int i) {
         switch (i) {
             case 0:
                 textSetting.setAlign(CommonEnum.ALIGN_LEFT);
