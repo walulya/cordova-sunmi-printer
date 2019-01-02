@@ -549,6 +549,9 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         String code = "12345678901";
         try{
             tscPrintBarcode(code);
+            zplPrint(code);
+            cpclPrint(code);
+            escPrint(code);
         } catch (SdkException e) {
             String errMsg = e.getMessage();
 			Log.e(LOG_TAG, errMsg);
@@ -604,5 +607,101 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         if (rtPrinter != null) {
             rtPrinter.writeMsgAsync(tscCmd.getAppendCmds());
         }
+    }
+
+      private void zplPrint(String barcodeContent) throws SdkException {
+        int labelWidth = 80;
+        int labelHeight = 40;
+
+        CmdFactory zplFac = new ZplFactory();
+        Cmd zplCmd = zplFac.create();
+
+        zplCmd.append(zplCmd.getHeaderCmd());
+        CommonSetting commonSetting = new CommonSetting();
+        commonSetting.setLableSizeBean(new LableSizeBean(labelWidth, labelHeight));
+        commonSetting.setLabelGap(2);
+        commonSetting.setPrintDirection(PrintDirection.NORMAL);
+        zplCmd.append(zplCmd.getCommonSettingCmd(commonSetting));
+        BarcodeSetting barcodeSetting = new BarcodeSetting();
+        barcodeSetting.setHeightInDot(48);
+        barcodeSetting.setBarcodeStringPosition(BarcodeStringPosition.BELOW_BARCODE);
+        barcodeSetting.setPrintRotation(printRotation);
+        int x = 10, y = 80;
+        switch (printRotation) {
+            case Rotate0:
+                x = 10;
+                y = 10;
+                break;
+            case Rotate90:
+                x = (labelWidth * 8) / 2;
+                y = 20;
+                break;
+            case Rotate270:
+                x = (labelWidth * 8) / 2;
+                y = (labelHeight * 8) - 20;
+                break;
+            default:
+                break;
+        }
+        barcodeSetting.setPosition(new Position(x, y));
+        byte[] barcodeCmd = zplCmd.getBarcodeCmd(barcodeType, barcodeSetting, barcodeContent);
+        zplCmd.append(barcodeCmd);
+
+        zplCmd.append(zplCmd.getPrintCopies(1));
+        zplCmd.append(zplCmd.getEndCmd());
+        if (rtPrinter != null) {
+            rtPrinter.writeMsgAsync(zplCmd.getAppendCmds());
+        }
+    }
+
+    private void cpclPrint(String barcodeContent) throws SdkException {
+        CmdFactory cpclFac = new CpclFactory();
+        Cmd cmd = cpclFac.create();
+        cmd.append(cmd.getCpclHeaderCmd(Integer.parseInt(BaseApplication.labelWidth), Integer.parseInt(BaseApplication.labelHeight), 1, Integer.parseInt(BaseApplication.labelOffset)));
+        BarcodeSetting barcodeSetting = new BarcodeSetting();
+        barcodeSetting.setBarcodeStringPosition(BarcodeStringPosition.NONE);
+        barcodeSetting.setPrintRotation(printRotation);
+        barcodeSetting.setNarrowInDot(2);//narrow bar width
+        barcodeSetting.setBarcodeStringPosition(ck_show_text.isChecked() ? BarcodeStringPosition.BELOW_BARCODE : BarcodeStringPosition.NONE);
+        if (printRotation == PrintRotation.Rotate0) {
+            barcodeSetting.setPosition(new Position(10, 20));//bar height setting
+        } else {
+            barcodeSetting.setPosition(new Position(300, 300));//bar height setting
+        }
+        barcodeSetting.setHeightInDot(48);
+        byte[] barcodeCmd = cmd.getBarcodeCmd(barcodeType, barcodeSetting, barcodeContent);
+        cmd.append(barcodeCmd);
+
+
+        cmd.append(cmd.getEndCmd());
+        if (rtPrinter != null) {
+            rtPrinter.writeMsgAsync(cmd.getAppendCmds());
+        }
+    }
+
+    private void escPrint(String barcodeContent) throws SdkException {
+        CmdFactory cmdFactory = new EscFactory();
+        Cmd escCmd = cmdFactory.create();
+        escCmd.append(escCmd.getHeaderCmd());
+
+
+        BarcodeSetting barcodeSetting = new BarcodeSetting();
+        barcodeSetting.setBarcodeStringPosition(BarcodeStringPosition.BELOW_BARCODE);
+        barcodeSetting.setHeightInDot(72);//accept value:1~255
+        barcodeSetting.setBarcodeWidth(3);//accept value:2~6
+        barcodeSetting.setQrcodeDotSize(5);//accept value: Esc(1~15), Tsc(1~10)
+        try {
+            escCmd.append(escCmd.getBarcodeCmd(barcodeType, barcodeSetting, barcodeContent));
+        } catch (SdkException e) {
+            e.printStackTrace();
+        }
+        escCmd.append(escCmd.getLFCRCmd());
+        escCmd.append(escCmd.getLFCRCmd());
+        escCmd.append(escCmd.getLFCRCmd());
+        escCmd.append(escCmd.getLFCRCmd());
+        escCmd.append(escCmd.getLFCRCmd());
+        escCmd.append(escCmd.getLFCRCmd());
+
+        rtPrinter.writeMsgAsync(escCmd.getAppendCmds());
     }
 }
