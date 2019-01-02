@@ -1022,9 +1022,9 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
 
             escCmd.append(escCmd.getTextCmd(textSetting, printStr));
 
-            escCmd.append(escCmd.getLFCRCmd());
-            escCmd.append(escCmd.getHeaderCmd());//初始化, Initial
-            escCmd.append(escCmd.getLFCRCmd());
+            //escCmd.append(escCmd.getLFCRCmd());
+            //escCmd.append(escCmd.getHeaderCmd());//初始化, Initial
+            //escCmd.append(escCmd.getLFCRCmd());
 
             rtPrinter.writeMsgAsync(escCmd.getAppendCmds());
         
@@ -1036,12 +1036,27 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
     private int getInputLineSpacing() {
         return lineSpacing;
     }
-    private int setInputLineSpacing(int n) {
+    private void setInputLineSpacing(int n) {
         if (n > 255) {
             n = 255;
         }
         lineSpacing =  n;
-        return lineSpacing;
+    }
+
+   private int setTextAlign(int i) {
+        switch (i) {
+            case 0:
+                textSetting.setAlign(CommonEnum.ALIGN_LEFT);
+                break;
+            case 1:
+                textSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
+                break;
+            case 2:
+                textSetting.setAlign(CommonEnum.ALIGN_RIGHT);
+                break;
+            default:
+                break;
+        }
     }
 
 }
