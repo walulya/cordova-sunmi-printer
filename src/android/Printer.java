@@ -657,12 +657,13 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
     private void cpclPrint(String barcodeContent) throws SdkException {
         CmdFactory cpclFac = new CpclFactory();
         Cmd cmd = cpclFac.create();
-        cmd.append(cmd.getCpclHeaderCmd(Integer.parseInt(BaseApplication.labelWidth), Integer.parseInt(BaseApplication.labelHeight), 1, Integer.parseInt(BaseApplication.labelOffset)));
+        String labelSizeStr = "80*40", labelWidth="80", labelHeight="40", labelSpeed="2", labelType="CPCL", labelOffset="0";
+        cmd.append(cmd.getCpclHeaderCmd(Integer.parseInt(labelWidth), Integer.parseInt(labelHeight), 1, Integer.parseInt(labelOffset)));
         BarcodeSetting barcodeSetting = new BarcodeSetting();
         barcodeSetting.setBarcodeStringPosition(BarcodeStringPosition.NONE);
         barcodeSetting.setPrintRotation(printRotation);
         barcodeSetting.setNarrowInDot(2);//narrow bar width
-        barcodeSetting.setBarcodeStringPosition(ck_show_text.isChecked() ? BarcodeStringPosition.BELOW_BARCODE : BarcodeStringPosition.NONE);
+        barcodeSetting.setBarcodeStringPosition(BarcodeStringPosition.BELOW_BARCODE );
         if (printRotation == PrintRotation.Rotate0) {
             barcodeSetting.setPosition(new Position(10, 20));//bar height setting
         } else {
