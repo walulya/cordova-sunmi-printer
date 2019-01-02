@@ -25,6 +25,9 @@ var RTPrinter = {
     printtext: function(fnSuccess, fnError, text){
         exec(fnSuccess, fnError, PLUGIN_NAME, "text", [text]);
      },
+    settextalign: function(fnSuccess, fnError, type){
+        exec(fnSuccess, fnError, PLUGIN_NAME, "textalign", [type]);
+     },
     setconntype: function(fnSuccess, fnError, type){
         exec(fnSuccess, fnError, PLUGIN_NAME, "conntype", [type]);
      },

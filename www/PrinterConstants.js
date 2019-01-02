@@ -27,6 +27,7 @@ module.exports = {
     CON_COM: 5
   },
   Align:{
+    ALIGN_LEFT : 0,
     ALIGN_MIDDLE : 1,
     ALIGN_RIGHT : 2,
     ALIGN_BOTH_SIDES : 3

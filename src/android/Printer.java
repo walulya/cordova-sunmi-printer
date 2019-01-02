@@ -160,6 +160,11 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
             this.setPrinterType(type, callbackContext);
             return true;
         }
+        else if (action.equals("textalign")) {
+            int type = args.getInt(0);
+            this.setTextAlign(type);
+            return true;
+        }
         else if (action.equals("conntype")) {
             int type = args.getInt(0);
             this.setConnectionType(type, callbackContext);
