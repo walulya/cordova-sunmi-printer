@@ -12,6 +12,8 @@ import android.os.Handler;
 import android.util.Log;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -92,6 +94,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
     private String barcodeContent;
     private PrintRotation printRotation = PrintRotation.Rotate0;
     private Bitmap mBitmap;
+    private int bmpPrintWidth = 40;
 
 
     @Override
@@ -788,6 +791,10 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
                  */
                 bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_SINGLE_COLOR);
 //                bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_MULTI_COLOR);
+
+               if (bmpPrintWidth > 72) {
+                    bmpPrintWidth = 72;
+                }
 
 
                 bitmapSetting.setBimtapLimitWidth(bmpPrintWidth * 8);
