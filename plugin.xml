@@ -24,10 +24,10 @@
         <source-file src="src/android/libs/android-support-annotations.jar" target-dir="libs" />
 
          <!--  drawable src/android/resources -->
-        <resource-file src="src/android/res/drawable-hdpi/pebuu_africa.png" target="res/drawable-hdpi/pebuu_africa.png" />
-        <resource-file src="src/android/res/drawable-mdpi/pebuu_africa.png" target="res/drawable-mdpi/pebuu_africa.png" />
-        <resource-file src="src/android/res/drawable-xhdpi/pebuu_africa.png" target="res/drawable-xhdpi/pebuu_africa.png" />
-        <resource-file src="src/android/res/drawable-xxhdpi/pebuu_africa.png" target="res/drawable-xxhdpi/pebuu_africa.png" />
+        <resource-file src="src/android/res/drawable-hdpi/pebuu_africa.jpg" target="res/drawable-hdpi/pebuu_africa.jpg" />
+        <resource-file src="src/android/res/drawable-mdpi/pebuu_africa.jpg" target="res/drawable-mdpi/pebuu_africa.jpg" />
+        <resource-file src="src/android/res/drawable-xhdpi/pebuu_africa.jpg" target="res/drawable-xhdpi/pebuu_africa.jpg" />
+        <resource-file src="src/android/res/drawable-xxhdpi/pebuu_africa.jpg" target="res/drawable-xxhdpi/pebuu_africa.jpg" />
 
     </platform>
 </plugin>
