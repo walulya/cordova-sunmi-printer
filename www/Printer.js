@@ -16,8 +16,8 @@ var RTPrinter = {
      printtest: function(fnSuccess, fnError){
         exec(fnSuccess, fnError, PLUGIN_NAME, "printtest", []);
      },
-     cuttest: function(fnSuccess, fnError){
-        exec(fnSuccess, fnError, PLUGIN_NAME, "cuttest", []);
+     barcode: function(fnSuccess, fnError, code){
+        exec(fnSuccess, fnError, PLUGIN_NAME, "barcode", [code]);
      },
     setconntype: function(fnSuccess, fnError, type){
         exec(fnSuccess, fnError, PLUGIN_NAME, "conntype", [type]);

@@ -125,8 +125,9 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
             selfTestPrint(callbackContext);
             return true;
         }
-        else if (action.equals("cuttest")) {
-            allCutTest(callbackContext);
+        else if (action.equals("barcode")) {
+            String code = args.getString(0);
+            printBarCode(code, callbackContext);
             return true;
         }
         else if (action.equals("printtype")) {
@@ -532,7 +533,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         cmd.append(cmd.getSelfTestCmd());
         rtPrinter.writeMsgAsync(cmd.getAppendCmds());
     }
-    private void allCutTest(CallbackContext callbackContext) {
+    private void printBarCode(String code, CallbackContext callbackContext) {
         if ( rtPrinter.getConnectState() != ConnectStateEnum.Connected){
             callbackContext.error("Printer not initialized" ); 
         }
@@ -546,7 +547,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
             e.printStackTrace();
         }
         rtPrinter.writeMsg(strPrint.getBytes());*/
-        String code = "12345678901";
+        //String code = "12345678901";
         try{
            switch ( this.currentCmdType ) {
             case BaseEnum.CMD_ESC:
@@ -710,8 +711,9 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         barcodeSetting.setQrcodeDotSize(5);//accept value: Esc(1~15), Tsc(1~10)
         try {
             escCmd.append(escCmd.getBarcodeCmd(barcodeType, barcodeSetting, barcodeContent));
-            escCmd.append(escCmd.getBarcodeCmd(Enum.valueOf(BarcodeType.class, "EAN13"), barcodeSetting, barcodeContent));
+            /*escCmd.append(escCmd.getBarcodeCmd(Enum.valueOf(BarcodeType.class, "EAN13"), barcodeSetting, barcodeContent));
             escCmd.append(escCmd.getBarcodeCmd(Enum.valueOf(BarcodeType.class, "ITF"), barcodeSetting, barcodeContent));
+            escCmd.append(escCmd.getBarcodeCmd(Enum.valueOf(BarcodeType.class, "ITF"), barcodeSetting, barcodeContent));*/
         } catch (SdkException e) {
             e.printStackTrace();
         }
