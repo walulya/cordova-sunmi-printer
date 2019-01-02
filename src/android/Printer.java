@@ -710,15 +710,17 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         barcodeSetting.setQrcodeDotSize(5);//accept value: Esc(1~15), Tsc(1~10)
         try {
             escCmd.append(escCmd.getBarcodeCmd(barcodeType, barcodeSetting, barcodeContent));
+            escCmd.append(escCmd.getBarcodeCmd(Enum.valueOf(BarcodeType.class, "EAN13"), barcodeSetting, barcodeContent));
+            escCmd.append(escCmd.getBarcodeCmd(Enum.valueOf(BarcodeType.class, "ITF"), barcodeSetting, barcodeContent));
         } catch (SdkException e) {
             e.printStackTrace();
         }
         escCmd.append(escCmd.getLFCRCmd());
         escCmd.append(escCmd.getLFCRCmd());
-        escCmd.append(escCmd.getLFCRCmd());
-        escCmd.append(escCmd.getLFCRCmd());
-        escCmd.append(escCmd.getLFCRCmd());
-        escCmd.append(escCmd.getLFCRCmd());
+        //escCmd.append(escCmd.getLFCRCmd());
+        //escCmd.append(escCmd.getLFCRCmd());
+        //escCmd.append(escCmd.getLFCRCmd());
+        //escCmd.append(escCmd.getLFCRCmd());
 
         rtPrinter.writeMsgAsync(escCmd.getAppendCmds());
     }
