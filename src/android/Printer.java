@@ -103,7 +103,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
     private TextSetting textSetting;
     private String mChartsetName = "UTF-8";
     private ESCFontTypeEnum curESCFontType = null;
-    private EditText et_linespacing;
+    private String printStr;
     int lineSpacing = 30;
 
 
@@ -747,7 +747,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
 
         CommonSetting commonSetting = new CommonSetting();
         commonSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
-        cmd.append(cmd.getCommonSettingCmd(commonSetting));        
+        escCmd.append(escCmd.getCommonSettingCmd(commonSetting));        
 
 
         BarcodeSetting barcodeSetting = new BarcodeSetting();
@@ -955,10 +955,8 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         }
 
     }
-
   
-  
-   private void cpclPrint() throws SdkException {
+   private void cpclPrintImage() throws SdkException {
 
         CmdFactory cpclFactory = new CpclFactory();
         Cmd cmd = cpclFactory.create();
@@ -992,9 +990,9 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         }
 
         try{
-            switch (BaseApplication.getInstance().getCurrentCmdType()) {
+            switch (this.currentCmdType) {
                 case BaseEnum.CMD_ESC:
-                    escPrint();
+                    escPrintText();
                     callbackContext.success("Text printing completed ");
                     break;
                 default:
