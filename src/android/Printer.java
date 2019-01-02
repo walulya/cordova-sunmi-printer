@@ -573,7 +573,6 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
            printImageForInd(); 
             
             
-            
         } catch (SdkException e) {
             String errMsg = e.getMessage();
 			Log.e(LOG_TAG, errMsg);
