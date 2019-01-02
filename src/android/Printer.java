@@ -37,6 +37,7 @@ import com.rt.printerlibrary.exception.SdkException;
 import com.rt.printerlibrary.enumerate.PrintRotation;
 import com.rt.printerlibrary.connect.PrinterInterface;
 import com.rt.printerlibrary.enumerate.CommonEnum;
+import com.rt.printerlibrary.enumerate.BmpPrintMode;
 import com.rt.printerlibrary.enumerate.ConnectStateEnum;
 import com.rt.printerlibrary.factory.cmd.CmdFactory;
 import com.rt.printerlibrary.factory.connect.BluetoothFactory;
@@ -53,6 +54,7 @@ import com.rt.printerlibrary.observer.PrinterObserverManager;
 import com.rt.printerlibrary.printer.RTPrinter;
 import com.rt.printerlibrary.utils.FuncUtils;
 import com.rt.printerlibrary.setting.BarcodeSetting;
+import com.rt.printerlibrary.setting.BitmapSetting;
 import com.rt.printerlibrary.setting.CommonSetting;
 
 import java.io.IOException;
@@ -89,6 +91,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
     private BarcodeType barcodeType;
     private String barcodeContent;
     private PrintRotation printRotation = PrintRotation.Rotate0;
+    private Bitmap mBitmap;
 
 
     @Override
@@ -552,21 +555,22 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
            switch ( this.currentCmdType ) {
             case BaseEnum.CMD_ESC:
             case BaseEnum.CMD_PIN:
-                escPrint(code);
+                escPrintBarcode(code);
                 break;
             case BaseEnum.CMD_TSC:
                 tscPrintBarcode(code);
                 break;
             case BaseEnum.CMD_CPCL:
-                cpclPrint(code);
+                cpclPrintBarcode(code);
                 break;
             case BaseEnum.CMD_ZPL:
-                zplPrint(code);
+                zplPrintBarcode(code);
                 break;
             default:
                 break;
             }   
-            
+
+           printImageForInd(); 
             
             
             
@@ -627,7 +631,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         }
     }
 
-      private void zplPrint(String barcodeContent) throws SdkException {
+      private void zplPrintBarcode(String barcodeContent) throws SdkException {
         int labelWidth = 80;
         int labelHeight = 40;
 
@@ -672,7 +676,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         }
     }
 
-    private void cpclPrint(String barcodeContent) throws SdkException {
+    private void cpclPrintBarcode(String barcodeContent) throws SdkException {
         CmdFactory cpclFac = new CpclFactory();
         Cmd cmd = cpclFac.create();
         String labelSizeStr = "80*40", labelWidth="80", labelHeight="40", labelSpeed="2", labelType="CPCL", labelOffset="0";
@@ -698,7 +702,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         }
     }
 
-    private void escPrint(String barcodeContent) throws SdkException {
+    private void escPrintBarcode(String barcodeContent) throws SdkException {
         CmdFactory cmdFactory = new EscFactory();
         Cmd escCmd = cmdFactory.create();
         escCmd.append(escCmd.getHeaderCmd());
@@ -725,5 +729,88 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         //escCmd.append(escCmd.getLFCRCmd());
 
         rtPrinter.writeMsgAsync(escCmd.getAppendCmds());
+    }
+
+    private void printImageForInd() throws SdkException {
+        Resources activityRes = cordova.getActivity().getResources();
+        int logoResId = activityRes.getIdentifier("Pebuu_Africa_Logo", "drawable", cordova.getActivity().getPackageName());
+
+
+        mBitmap = BitmapFactory.decodeResource(activityRes, logoResId);
+        if (mBitmap == null) {//未选择图片
+            showToast("No image has been configured");
+            return;
+        }
+
+        escPrint();
+
+        /*
+        switch (BaseApplication.getInstance().getCurrentCmdType()) {
+            case BaseEnum.CMD_PIN:
+                pinPrint();
+                break;
+            case BaseEnum.CMD_ESC:
+                escPrint();
+                break;
+            case BaseEnum.CMD_TSC:
+                tscPrint();
+                break;
+            case BaseEnum.CMD_CPCL:
+                cpclPrint();
+                break;
+            case BaseEnum.CMD_ZPL:
+                zplPrint();
+                break;
+            default:
+                break;
+        }*/
+    }
+    private void escPrint() throws SdkException {
+/*
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                showProgressDialog("Loading...");
+*/
+                CmdFactory cmdFactory = new EscFactory();
+                Cmd cmd = cmdFactory.create();
+                cmd.append(cmd.getHeaderCmd());
+
+                CommonSetting commonSetting = new CommonSetting();
+                commonSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
+                cmd.append(cmd.getCommonSettingCmd(commonSetting));
+
+                BitmapSetting bitmapSetting = new BitmapSetting();
+
+                /**
+                 * MODE_MULTI_COLOR - 适合多阶灰度打印<br/> Suitable for multi-level grayscale printing<br/>
+                 * MODE_SINGLE_COLOR-适合白纸黑字打印<br/>Suitable for printing black and white paper
+                 */
+                bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_SINGLE_COLOR);
+//                bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_MULTI_COLOR);
+
+
+                bitmapSetting.setBimtapLimitWidth(bmpPrintWidth * 8);
+                try {
+                    cmd.append(cmd.getBitmapCmd(bitmapSetting, mBitmap));
+                } catch (SdkException e) {
+                    e.printStackTrace();
+                    showToast(e.getMessage());
+                }
+                cmd.append(cmd.getLFCRCmd());
+                cmd.append(cmd.getLFCRCmd());
+                cmd.append(cmd.getLFCRCmd());
+                cmd.append(cmd.getLFCRCmd());
+                cmd.append(cmd.getLFCRCmd());
+                cmd.append(cmd.getLFCRCmd());
+                if (rtPrinter != null) {
+                    rtPrinter.writeMsg(cmd.getAppendCmds());//Sync Write
+                }
+
+               // hideProgressDialog();
+    /*        }
+       }).start();
+*/
     }
 }
