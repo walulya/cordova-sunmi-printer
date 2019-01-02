@@ -1022,7 +1022,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
 
             escCmd.append(escCmd.getTextCmd(textSetting, printStr));
 
-            //escCmd.append(escCmd.getLFCRCmd());
+            escCmd.append(escCmd.getLFCRCmd());
             escCmd.append(escCmd.getHeaderCmd());//初始化, Initial
             //escCmd.append(escCmd.getLFCRCmd());
 
