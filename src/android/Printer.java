@@ -732,7 +732,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
 
     private void printImageForInd() throws SdkException {
         Resources activityRes = cordova.getActivity().getResources();
-        int logoResId = activityRes.getIdentifier("Pebuu_Africa_Logo", "drawable", cordova.getActivity().getPackageName());
+        int logoResId = activityRes.getIdentifier("pebuu_africa", "drawable", cordova.getActivity().getPackageName());
 
 
         mBitmap = BitmapFactory.decodeResource(activityRes, logoResId);
