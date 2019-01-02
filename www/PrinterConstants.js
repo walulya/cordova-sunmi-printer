@@ -25,5 +25,16 @@ module.exports = {
     CON_WIFI: 3, 
     CON_USB: 4, 
     CON_COM: 5
+  },
+  Align:{
+    ALIGN_MIDDLE : 1,
+    ALIGN_RIGHT : 2,
+    ALIGN_BOTH_SIDES : 3
+  },
+  Font:{
+    FONT_A_12x24 : 1, 
+    FONT_B_9x24 : 2, 
+    FONT_C_9x17 : 3, 
+    FONT_D_8x16 : 4
   }
 };

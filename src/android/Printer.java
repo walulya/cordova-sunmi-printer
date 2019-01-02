@@ -15,6 +15,7 @@ import android.widget.Toast;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.content.res.Resources;
+import android.text.TextUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -36,12 +37,13 @@ import com.rt.printerlibrary.enumerate.BarcodeStringPosition;
 import com.rt.printerlibrary.enumerate.BarcodeType;
 import com.rt.printerlibrary.enumerate.EscBarcodePrintOritention;
 import com.rt.printerlibrary.enumerate.PrintDirection;
-import com.rt.printerlibrary.exception.SdkException;
+import com.rt.printerlibrary.enumerate.ESCFontTypeEnum;
 import com.rt.printerlibrary.enumerate.PrintRotation;
-import com.rt.printerlibrary.connect.PrinterInterface;
 import com.rt.printerlibrary.enumerate.CommonEnum;
 import com.rt.printerlibrary.enumerate.BmpPrintMode;
 import com.rt.printerlibrary.enumerate.ConnectStateEnum;
+import com.rt.printerlibrary.exception.SdkException;
+import com.rt.printerlibrary.connect.PrinterInterface;
 import com.rt.printerlibrary.factory.cmd.CmdFactory;
 import com.rt.printerlibrary.factory.connect.BluetoothFactory;
 import com.rt.printerlibrary.factory.connect.PIFactory;
@@ -59,6 +61,7 @@ import com.rt.printerlibrary.utils.FuncUtils;
 import com.rt.printerlibrary.setting.BarcodeSetting;
 import com.rt.printerlibrary.setting.BitmapSetting;
 import com.rt.printerlibrary.setting.CommonSetting;
+import com.rt.printerlibrary.setting.TextSetting;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -96,6 +99,12 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
     private PrintRotation printRotation = PrintRotation.Rotate0;
     private Bitmap mBitmap;
     private int bmpPrintWidth = 40;
+
+    private TextSetting textSetting;
+    private String mChartsetName = "UTF-8";
+    private ESCFontTypeEnum curESCFontType = null;
+    private EditText et_linespacing;
+    int lineSpacing = 30;
 
 
     @Override
@@ -137,6 +146,15 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
             printBarCode(code, callbackContext);
             return true;
         }
+        else if (action.equals("logo")) {
+            printLogo(callbackContext);
+            return true;
+        }
+        else if (action.equals("text")) {
+            String text = args.getString(0);
+            printText(text, callbackContext);
+            return true;
+        }
         else if (action.equals("printtype")) {
             int type = args.getInt(0);
             this.setPrinterType(type, callbackContext);
@@ -167,6 +185,8 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         rtPrinter = printerFactory.create();
 
         barcodeType = Enum.valueOf(BarcodeType.class, "UPC_A");
+
+        textSetting = new TextSetting();
 
         PrinterObserverManager.getInstance().add(this);//Add connection status listener
         callbackContext.success("Print Module Initialized");
@@ -290,6 +310,35 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
     }
     private void getConnectionType( CallbackContext callbackContext) {
         callbackContext.success(checkedConType);
+    }
+
+    private void setFontType(int type, CallbackContext callbackContext) {
+        String errMsg = null;
+        boolean set = true;
+        switch(type){
+            case 0:
+                curESCFontType = null;
+                break;
+            case 1:
+                curESCFontType = ESCFontTypeEnum.FONT_A_12x24;
+                break;
+            case 2:
+                curESCFontType = ESCFontTypeEnum.FONT_B_9x24;
+                break;
+            case 3:
+                curESCFontType = ESCFontTypeEnum.FONT_C_9x17;
+                break;
+            case 4:
+                curESCFontType = ESCFontTypeEnum.FONT_D_8x16;
+                break;
+            default:
+                curESCFontType = null;
+                break;
+        } 
+        if (set){
+            textSetting.setEscFontType(curESCFontType);
+            callbackContext.success("Connection type set successfully");
+         }
     }
 
     //This will return the array list of paired bluetooth printers
@@ -544,17 +593,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         if ( rtPrinter.getConnectState() != ConnectStateEnum.Connected){
             callbackContext.error("Printer not initialized" ); 
         }
-        //TonyUtils.Tsc_InitLabelPrint(rtPrinter);
-        /*String strPrintTxt = TonyUtils.printText("80", "80", "TSS24.BF2", "0", "1", "1", "Hello,容大!");
-        String strPrint = TonyUtils.setPRINT("1", "1");
 
-        try {
-            rtPrinter.writeMsg(strPrintTxt.getBytes("GBK"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        rtPrinter.writeMsg(strPrint.getBytes());*/
-        //String code = "12345678901";
         try{
            switch ( this.currentCmdType ) {
             case BaseEnum.CMD_ESC:
@@ -573,10 +612,6 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
             default:
                 break;
             }   
-
-           printImageForInd(); 
-            
-            
         } catch (SdkException e) {
             String errMsg = e.getMessage();
 			Log.e(LOG_TAG, errMsg);
@@ -584,7 +619,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
 			callbackContext.error(errMsg);
             return;
         }        
-        callbackContext.success("Printer test completed ");
+        callbackContext.success("Barcode completed ");
     }
 
      private void tscPrintBarcode(String barcodeContent) throws SdkException {
@@ -710,6 +745,10 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         Cmd escCmd = cmdFactory.create();
         escCmd.append(escCmd.getHeaderCmd());
 
+        CommonSetting commonSetting = new CommonSetting();
+        commonSetting.setAlign(CommonEnum.ALIGN_MIDDLE);
+        cmd.append(cmd.getCommonSettingCmd(commonSetting));        
+
 
         BarcodeSetting barcodeSetting = new BarcodeSetting();
         barcodeSetting.setBarcodeStringPosition(BarcodeStringPosition.BELOW_BARCODE);
@@ -734,6 +773,25 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         rtPrinter.writeMsgAsync(escCmd.getAppendCmds());
     }
 
+
+    private void printLogo(CallbackContext callbackContext) {
+        if ( rtPrinter.getConnectState() != ConnectStateEnum.Connected){
+            callbackContext.error("Printer not initialized" ); 
+        }
+
+        try{
+           printImageForInd();
+        } catch (SdkException e) {
+            String errMsg = e.getMessage();
+			Log.e(LOG_TAG, errMsg);
+			e.printStackTrace();
+			callbackContext.error(errMsg);
+            return;
+        }        
+        callbackContext.success("Logo print completed ");
+    }
+
+
     private void printImageForInd() throws SdkException {
         Resources activityRes = cordova.getActivity().getResources();
         int logoResId = activityRes.getIdentifier("pebuu_africa", "drawable", cordova.getActivity().getPackageName());
@@ -744,38 +802,29 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
             showToast("No image has been configured");
             return;
         }
-
-        escPrint();
-
-        /*
-        switch (BaseApplication.getInstance().getCurrentCmdType()) {
+        
+        switch (this.currentCmdType) {
             case BaseEnum.CMD_PIN:
-                pinPrint();
+                pinPrintImage();
                 break;
             case BaseEnum.CMD_ESC:
-                escPrint();
+                escPrintImage();
                 break;
             case BaseEnum.CMD_TSC:
-                tscPrint();
+                tscPrintImage();
                 break;
             case BaseEnum.CMD_CPCL:
-                cpclPrint();
+                cpclPrintImage();
                 break;
             case BaseEnum.CMD_ZPL:
-                zplPrint();
+                zplPrintImage();
                 break;
             default:
                 break;
-        }*/
+        }
     }
-    private void escPrint() throws SdkException {
-/*
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
 
-                showProgressDialog("Loading...");
-*/
+    private void escPrintImage() throws SdkException {
                 CmdFactory cmdFactory = new EscFactory();
                 Cmd cmd = cmdFactory.create();
                 cmd.append(cmd.getHeaderCmd());
@@ -791,7 +840,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
                  * MODE_SINGLE_COLOR-适合白纸黑字打印<br/>Suitable for printing black and white paper
                  */
                 bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_MULTI_COLOR);
-//                bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_MULTI_COLOR);
+                // bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_MULTI_COLOR);
 
                if (bmpPrintWidth > 72) {
                     bmpPrintWidth = 72;
@@ -807,17 +856,198 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
                 }
                 cmd.append(cmd.getLFCRCmd());
                 cmd.append(cmd.getLFCRCmd());
-                cmd.append(cmd.getLFCRCmd());
-                cmd.append(cmd.getLFCRCmd());
-                cmd.append(cmd.getLFCRCmd());
-                cmd.append(cmd.getLFCRCmd());
                 if (rtPrinter != null) {
                     rtPrinter.writeMsg(cmd.getAppendCmds());//Sync Write
                 }
 
-               // hideProgressDialog();
-    /*        }
-       }).start();
-*/
     }
+
+    private void pinPrintImage() throws SdkException {
+
+                CmdFactory cmdFactory = new PinFactory();
+                Cmd cmd = cmdFactory.create();
+                // cmd.append(cmd.getHeaderCmd());
+
+                int limitDots = Integer.parseInt(et_pic_width.getText().toString())*8;
+                BitmapSetting bitmapSetting = new BitmapSetting();
+                CommonSetting commonSetting = new CommonSetting();
+
+
+
+                commonSetting.setAlign(CommonEnum.ALIGN_MIDDLE);//Left, Middle, Right
+                cmd.append(cmd.getCommonSettingCmd(commonSetting));
+
+                cmd.append(cmd.getLFCRCmd());
+                cmd.append(cmd.getLFCRCmd());
+
+
+                bitmapSetting.setBimtapLimitWidth(limitDots);
+
+                try {
+                    cmd.append(cmd.getBitmapCmd(bitmapSetting, mBitmap));
+                } catch (SdkException e) {
+                    e.printStackTrace();
+                }
+                cmd.append(cmd.getEndCmd());
+
+                rtPrinter.writeMsg(cmd.getAppendCmds());
+
+    }
+
+   private void zplPrintImage() throws SdkException {
+
+        CmdFactory zplFac = new ZplFactory();
+        Cmd zplCmd = zplFac.create();
+
+        zplCmd.append(zplCmd.getHeaderCmd());
+        CommonSetting commonSetting = new CommonSetting();
+        commonSetting.setLableSizeBean(new LableSizeBean(80, 80));
+        commonSetting.setLabelGap(2);
+        commonSetting.setPrintDirection(PrintDirection.NORMAL);
+        zplCmd.append(zplCmd.getHeaderCmd());
+        zplCmd.append(zplCmd.getCommonSettingCmd(commonSetting));
+
+
+        BitmapSetting bitmapSetting = new BitmapSetting();
+        bitmapSetting.setPrintPostion(new Position(20, 20));
+        bitmapSetting.setBimtapLimitWidth(bmpPrintWidth * 8);
+        try {
+            zplCmd.append(zplCmd.getBitmapCmd(bitmapSetting, mBitmap));
+            zplCmd.append(zplCmd.getPrintCopies(1));
+        } catch (SdkException e) {
+            e.printStackTrace();
+        }
+
+        zplCmd.append(zplCmd.getEndCmd());
+        if (rtPrinter != null) {
+            rtPrinter.writeMsg(zplCmd.getAppendCmds());
+        }
+ 
+    }
+
+    private void tscPrintImage() throws SdkException {
+
+        CmdFactory tscFac = new TscFactory();
+        Cmd tscCmd = tscFac.create();
+
+        tscCmd.append(tscCmd.getHeaderCmd());
+        CommonSetting commonSetting = new CommonSetting();
+        commonSetting.setLableSizeBean(new LableSizeBean(80, 40));
+        commonSetting.setLabelGap(2);
+        commonSetting.setPrintDirection(PrintDirection.NORMAL);
+        tscCmd.append(tscCmd.getHeaderCmd());
+        tscCmd.append(tscCmd.getCommonSettingCmd(commonSetting));
+
+
+        BitmapSetting bitmapSetting = new BitmapSetting();
+        bitmapSetting.setPrintPostion(new Position(20, 80));
+        bitmapSetting.setBimtapLimitWidth(bmpPrintWidth * 8);
+        bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_SINGLE_COLOR);
+        try {
+            tscCmd.append(tscCmd.getBitmapCmd(bitmapSetting, mBitmap));
+            tscCmd.append(tscCmd.getPrintCopies(1));//Print Copies setting
+        } catch (SdkException e) {
+            e.printStackTrace();
+        }
+
+        if (rtPrinter != null) {
+            rtPrinter.writeMsg(tscCmd.getAppendCmds());
+        }
+
+    }
+
+  
+  
+   private void cpclPrint() throws SdkException {
+
+        CmdFactory cpclFactory = new CpclFactory();
+        Cmd cmd = cpclFactory.create();
+
+        cmd.append(cmd.getCpclHeaderCmd(80, 60, 1, 0));
+        BitmapSetting bitmapSetting = new BitmapSetting();
+        bitmapSetting.setPrintPostion(new Position(20, 20));
+        bitmapSetting.setBimtapLimitWidth(bmpPrintWidth * 8);
+        bitmapSetting.setBmpPrintMode(BmpPrintMode.MODE_SINGLE_COLOR);
+        try {
+            cmd.append(cmd.getBitmapCmd(bitmapSetting, mBitmap));
+        } catch (SdkException e) {
+            e.printStackTrace();
+        }
+        cmd.append(cmd.getEndCmd());
+        if (rtPrinter != null) {
+            rtPrinter.writeMsg(cmd.getAppendCmds());
+        }
+    }
+
+     private void printText(String text, CallbackContext callbackContext) {
+        if ( rtPrinter.getConnectState() != ConnectStateEnum.Connected){
+            callbackContext.error("Printer not initialized" ); 
+        }
+
+        printStr = text;
+
+        if (TextUtils.isEmpty(printStr)) {
+            callbackContext.error("Empty text");
+            return;
+        }
+
+        try{
+            switch (BaseApplication.getInstance().getCurrentCmdType()) {
+                case BaseEnum.CMD_ESC:
+                    escPrint();
+                    callbackContext.success("Text printing completed ");
+                    break;
+                default:
+                    callbackContext.error("Not supported");
+                    break;
+            }
+        } catch (UnsupportedEncodingException e) {
+            String errMsg = e.getMessage();
+			Log.e(LOG_TAG, errMsg);
+			e.printStackTrace();
+			callbackContext.error(errMsg);
+            return;
+        } 
+    }
+
+    private void escPrintText() throws UnsupportedEncodingException {
+        if (rtPrinter == null || rtPrinter.getConnectState() != ConnectStateEnum.Connected){
+            callbackContext.error("Printer not initialized" ); 
+        }
+        
+        
+            CmdFactory escFac = new EscFactory();
+            Cmd escCmd = escFac.create();
+            escCmd.append(escCmd.getHeaderCmd());//初始化, Initial
+
+            escCmd.setChartsetName(mChartsetName);
+
+            CommonSetting commonSetting = new CommonSetting();
+            commonSetting.setEscLineSpacing(getInputLineSpacing());
+            escCmd.append(escCmd.getCommonSettingCmd(commonSetting));
+
+            escCmd.append(escCmd.getTextCmd(textSetting, printStr));
+
+            escCmd.append(escCmd.getLFCRCmd());
+            escCmd.append(escCmd.getHeaderCmd());//初始化, Initial
+            escCmd.append(escCmd.getLFCRCmd());
+
+            rtPrinter.writeMsgAsync(escCmd.getAppendCmds());
+        
+    }
+
+    /**
+     * line spacing setting
+     */
+    private int getInputLineSpacing() {
+        return lineSpacing;
+    }
+    private int setInputLineSpacing(int n) {
+        if (n > 255) {
+            n = 255;
+        }
+        lineSpacing =  n;
+        return lineSpacing;
+    }
+
 }
