@@ -190,7 +190,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         rtPrinter = printerFactory.create();
 
         //barcodeType = Enum.valueOf(BarcodeType.class, "UPC_A");
-        barcodeType = Enum.valueOf(BarcodeType.class, "CODE39");
+        barcodeType = Enum.valueOf(BarcodeType.class, "EAN13");
 
         textSetting = new TextSetting();
 
@@ -763,7 +763,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         barcodeSetting.setQrcodeDotSize(5);//accept value: Esc(1~15), Tsc(1~10)
         try {
             escCmd.append(escCmd.getBarcodeCmd(barcodeType, barcodeSetting, barcodeContent));
-            escCmd.append(escCmd.getBarcodeCmd(Enum.valueOf(BarcodeType.class, "EAN13"), barcodeSetting, barcodeContent));
+            /*escCmd.append(escCmd.getBarcodeCmd(Enum.valueOf(BarcodeType.class, "EAN13"), barcodeSetting, barcodeContent));*/
             //escCmd.append(escCmd.getBarcodeCmd(Enum.valueOf(BarcodeType.class, "CODE93"), barcodeSetting, barcodeContent));
             //escCmd.append(escCmd.getBarcodeCmd(Enum.valueOf(BarcodeType.class, "UPC_A"), barcodeSetting, barcodeContent));
         } catch (SdkException e) {
