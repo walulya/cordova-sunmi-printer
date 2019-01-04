@@ -21,8 +21,8 @@
         <source-file src="src/android/BaseEnum.java" target-dir="src/pebuu/printer/BaseEnum" />
         <source-file src="src/android/TonyUtils.java" target-dir="src/pebuu/printer/TonyUtils" />
         <source-file src="src/android/libs/printer_library.jar" target-dir="libs" />
-       <!-- <source-file src="src/android/libs/android-support-annotations.jar" target-dir="libs" />
-    -->
+        <source-file src="src/android/libs/android-support-annotations.jar" target-dir="libs" />
+    
          <!--  drawable src/android/resources -->
         <resource-file src="src/android/res/drawable-hdpi/pebuu_africa.jpg" target="res/drawable-hdpi/pebuu_africa.jpg" />
         <resource-file src="src/android/res/drawable-mdpi/pebuu_africa.jpg" target="res/drawable-mdpi/pebuu_africa.jpg" />
