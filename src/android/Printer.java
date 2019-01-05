@@ -20,6 +20,8 @@ import android.text.TextUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import java.io.StringWriter;
+import java.io.PrintWriter;
 
 import com.rt.printerlibrary.bean.BluetoothEdrConfigBean;
 import com.rt.printerlibrary.bean.UsbConfigBean;
@@ -477,7 +479,11 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
             String errMsg = e.getMessage();
 			Log.e(LOG_TAG, errMsg);
 			//e.printStackTrace();
-			callbackContext.error(errMsg);
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            String sStackTrace = sw.toString();
+			callbackContext.error(sStackTrace);
         } finally {
 
         }
