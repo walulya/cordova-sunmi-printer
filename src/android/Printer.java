@@ -467,6 +467,9 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         printerInterface.setConfigObject(bluetoothEdrConfigBean);
         rtPrinter.setPrinterInterface(printerInterface);
         try {
+            if (rtPrinter == null){
+                callbackContext.error("How the fuck is this null"); 
+            }
             //rtPrinter.connect(bluetoothEdrConfigBean);
             //callbackContext.success("Printer connected successfully" + rtPrinter.getConnectState());
             showToast(printerInterface.getConfigObject().toString() +" "+ rtPrinter.getConnectState());
