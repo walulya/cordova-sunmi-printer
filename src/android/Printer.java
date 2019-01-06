@@ -196,7 +196,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
 
         textSetting = new TextSetting();
 
-        PrinterObserverManager.getInstance().add(this);//Add connection status listener
+        //PrinterObserverManager.getInstance().add(this);//Add connection status listener
         callbackContext.success("Print Module Initialized");
     }
 
