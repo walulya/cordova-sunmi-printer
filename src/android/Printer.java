@@ -136,7 +136,8 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
             return true;
         }
         else if (action.equals("connect")) {
-            doConnect(callbackContext);
+            callbackContext.success("Printer connected successfully" + rtPrinter.getConnectState());
+            //doConnect(callbackContext);
             return true;
         }
         else if (action.equals("printtest")) {
