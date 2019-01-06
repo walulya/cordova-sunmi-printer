@@ -136,8 +136,8 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
             return true;
         }
         else if (action.equals("connect")) {
-            callbackContext.success("Printer connected successfully");
-            //doConnect(callbackContext);
+            //callbackContext.success("Printer connected successfully");
+            doConnect(callbackContext);
             return true;
         }
         else if (action.equals("printtest")) {
@@ -197,7 +197,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
 
         textSetting = new TextSetting();
 
-        //PrinterObserverManager.getInstance().add(this);//Add connection status listener
+        PrinterObserverManager.getInstance().add(this);//Add connection status listener
         callbackContext.success("Print Module Initialized");
     }
 
@@ -470,9 +470,9 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         printerInterface.setConfigObject(bluetoothEdrConfigBean);
         rtPrinter.setPrinterInterface(printerInterface);
         try {
-            rtPrinter.connect(bluetoothEdrConfigBean);
-            callbackContext.success("Printer connected successfully" + rtPrinter.getConnectState());
-            showToast(printerInterface.getConfigObject().toString() +" "+ rtPrinter.getConnectState());
+            //rtPrinter.connect(bluetoothEdrConfigBean);
+            callbackContext.success("Printer connected successfully");
+            showToast(printerInterface.getConfigObject().toString());
         } catch (Exception e) {
             String errMsg = e.getMessage();
 			Log.e(LOG_TAG, errMsg);
