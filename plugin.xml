@@ -16,7 +16,9 @@
         </config-file>
         <config-file parent="/*" target="AndroidManifest.xml">
             <uses-permission android:name="android.permission.BLUETOOTH" />
+            <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
         </config-file>
+
         <source-file src="src/android/Printer.java" target-dir="src/pebuu/printer/Printer" />
         <source-file src="src/android/BaseEnum.java" target-dir="src/pebuu/printer/BaseEnum" />
         <source-file src="src/android/TonyUtils.java" target-dir="src/pebuu/printer/TonyUtils" />
