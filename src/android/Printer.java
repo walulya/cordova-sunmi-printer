@@ -489,7 +489,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
 
     @Override
     public void printerObserverCallback(final PrinterInterface printerInterface, final int state) {
-        /* cordova.getActivity().runOnUiThread(new Runnable() {
+         cordova.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                  switch (state) {
@@ -520,7 +520,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
                         break;
                 }               
             }
-         });*/
+         });
     
     }
 
