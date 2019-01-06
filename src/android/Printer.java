@@ -469,11 +469,8 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
         printerInterface.setConfigObject(bluetoothEdrConfigBean);
         rtPrinter.setPrinterInterface(printerInterface);
         try {
-            if (rtPrinter == null){
-                callbackContext.error("How the fuck is this null"); 
-            }
             rtPrinter.connect(bluetoothEdrConfigBean);
-            //callbackContext.success("Printer connected successfully" + rtPrinter.getConnectState());
+            callbackContext.success("Printer connected successfully" + rtPrinter.getConnectState());
             showToast(printerInterface.getConfigObject().toString() +" "+ rtPrinter.getConnectState());
         } catch (Exception e) {
             String errMsg = e.getMessage();
@@ -491,7 +488,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
 
     @Override
     public void printerObserverCallback(final PrinterInterface printerInterface, final int state) {
-         cordova.getActivity().runOnUiThread(new Runnable() {
+        /* cordova.getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
                  switch (state) {
@@ -522,7 +519,7 @@ public class Printer extends CordovaPlugin implements PrinterObserver{
                         break;
                 }               
             }
-         });
+         });*/
     
     }
 
