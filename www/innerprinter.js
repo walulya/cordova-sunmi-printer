@@ -1,6 +1,6 @@
 exec = require('cordova/exec');
 
-module.exports = {
+var SunmiPrinter = {
 
   printerInit: function (resolve, reject) {
     exec(resolve, reject, "Printer", "printerInit", []);
@@ -64,3 +64,5 @@ module.exports = {
   }
 
 }
+
+module.exports = SunmiPrinter;
