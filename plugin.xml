@@ -1,37 +1,46 @@
-<?xml version='1.0' encoding='utf-8'?>
-<plugin id="cordova-plugin-rtprinter" version="1.0.0" xmlns="http://apache.org/cordova/ns/plugins/1.0" xmlns:android="http://schemas.android.com/apk/res/android">
-    <name>Printer</name>
-    <js-module name="Printer" src="www/Printer.js">
-        <!--<clobbers target="cordova.plugins.Printer" /> -->
-        <clobbers target="RTPrinter" />
-    </js-module>
-   <js-module src="www/PrinterConstants.js" name="Camera">
-        <clobbers target="RTConstants" />
-    </js-module>
-    <platform name="android">
-        <config-file parent="/*" target="res/xml/config.xml">
-            <feature name="Printer">
-                <param name="android-package" value="pebuu.printer.Printer" />
-            </feature>
-        </config-file>
-        <config-file parent="/*" target="AndroidManifest.xml">
-            <uses-permission android:name="android.permission.BLUETOOTH" />
-            <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
-        </config-file>
-
-        <source-file src="src/android/Printer.java" target-dir="src/pebuu/printer/Printer" />
-        <source-file src="src/android/BaseEnum.java" target-dir="src/pebuu/printer/BaseEnum" />
-        <source-file src="src/android/TonyUtils.java" target-dir="src/pebuu/printer/TonyUtils" />
-        <source-file src="src/android/libs/printer_library.jar" target-dir="libs" />
-        <!--
-        <source-file src="src/android/libs/android-support-annotations.jar" target-dir="libs" />
-        -->
-    
-         <!--  drawable src/android/resources -->
-        <resource-file src="src/android/res/drawable-hdpi/pebuu_africa.jpg" target="res/drawable-hdpi/pebuu_africa.jpg" />
-        <resource-file src="src/android/res/drawable-mdpi/pebuu_africa.jpg" target="res/drawable-mdpi/pebuu_africa.jpg" />
-        <resource-file src="src/android/res/drawable-xhdpi/pebuu_africa.jpg" target="res/drawable-xhdpi/pebuu_africa.jpg" />
-        <resource-file src="src/android/res/drawable-xxhdpi/pebuu_africa.jpg" target="res/drawable-xxhdpi/pebuu_africa.jpg" />
-
-    </platform>
+<?xml version="1.0" encoding="utf-8"?>
+<plugin
+  xmlns="http://www.phonegap.com/ns/plugins/1.0"
+  xmlns:android="http://schemas.android.com/apk/res/android" id="cordova-sunmi-printer" version="1.0.3">
+  <name>SunmiInnerPrinter</name>
+  <engines>
+    <engine name="cordova" version=">=3.0.0"/>
+  </engines>
+  <js-module src="www/innerprinter.js" name="InnerPrinter">
+    <clobbers target="sunmiInnerPrinter" />
+  </js-module>
+  <platform name="android">
+    <config-file target="res/xml/config.xml" parent="/*">
+      <feature name="Printer">
+        <param name="android-package" value="com.sunmi.innerprinter.Printer"/>
+        <param name="onload" value="true" />
+      </feature>
+    </config-file>
+    <config-file target="AndroidManifest.xml" parent="/manifest/application">
+      <receiver android:name="com.sunmi.innerprinter.PrinterStatusReceiver" android:enabled="true">
+        <intent-filter android:priority="1000">
+          <action android:name="woyou.aidlservice.jiuv5.OUT_OF_PAPER_ACTION" />
+          <action android:name="woyou.aidlservice.jiuv5.ERROR_ACTION" />
+          <action android:name="woyou.aidlservice.jiuv5.NORMAL_ACTION" />
+          <action android:name="woyou.aidlservice.jiuv5.COVER_OPEN_ACTION" />
+          <action android:name="woyou.aidlservice.jiuv5.COVER_ERROR_ACTION" />
+          <action android:name="woyou.aidlservice.jiuv5.KNIFE_ERROR_ACTION_1" />
+          <action android:name="woyou.aidlservice.jiuv5.KNIFE_ERROR_ACTION_2" />
+          <action android:name="woyou.aidlservice.jiuv5.OVER_HEATING_ACITON" />
+          <action android:name="woyou.aidlservice.jiuv5.FIRMWARE_UPDATING_ACITON" />
+        </intent-filter>
+      </receiver>
+      <service android:name="woyou.aidlservice.jiuiv5.IWoyouService">
+        <intent-filter>
+          <action android:name="woyou.aidlservice.jiuiv5.IWoyouService" />
+        </intent-filter>
+      </service>
+    </config-file>
+    <source-file src="src/android/com/sunmi/innerprinter/Printer.java" target-dir="src/com/sunmi/innerprinter/"/>
+    <source-file src="src/android/com/sunmi/innerprinter/PrinterStatusReceiver.java" target-dir="src/com/sunmi/innerprinter/"/>
+    <source-file src="src/android/com/sunmi/utils/BitmapUtils.java" target-dir="src/com/sunmi/utils/"/>
+    <source-file src="src/android/com/sunmi/utils/ThreadPoolManager.java" target-dir="src/com/sunmi/utils/"/>
+    <source-file src="src/android/woyou/aidlservice/jiuiv5/IWoyouService.aidl" target-dir="src/woyou/aidlservice/jiuiv5/"/>
+    <source-file src="src/android/woyou/aidlservice/jiuiv5/ICallback.aidl" target-dir="src/woyou/aidlservice/jiuiv5/"/>
+  </platform>
 </plugin>

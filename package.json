@@ -1,17 +1,24 @@
 {
-  "name": "Printer",
-  "version": "1.0.0",
-  "description": "",
+  "name": "cordova-plugin-sunmi-inner-printer",
+  "version": "1.0.3",
+  "description": "Cordova/Ionic Sunmi V1 Inner Printer",
   "cordova": {
-    "id": "pebuu.printer",
+    "id": "cordova-plugin-sunmi-inner-printer",
     "platforms": [
       "android"
     ]
   },
-  "keywords": [
-    "ecosystem:cordova",
-    "cordova-android"
-  ],
-  "author": "",
-  "license": "ISC"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/silviocamposs/cordova-plugin-sunmi-inner-printer"
+  },
+  "author": "Silvio Campos",
+  "license": "MIT",
+  "engines": {
+    "cordovaDependencies": {
+      "3.0.0": {
+        "cordova-android": ">=6.3.0"
+      }
+    }
+  }
 }
